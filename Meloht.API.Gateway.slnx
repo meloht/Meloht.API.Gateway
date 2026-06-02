@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Meloht.API.Gateway.WebAPI/Meloht.API.Gateway.WebAPI.csproj" />
+  <Project Path="Meloht.API.Gateway/Meloht.API.Gateway.csproj" />
+</Solution>
