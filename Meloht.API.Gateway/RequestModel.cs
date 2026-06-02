@@ -1,0 +1,19 @@
+﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Meloht.API.Gateway
+{
+    internal class RequestModel
+    {
+        public Guid Guid { get; set; }
+        public HttpContext context { get; set; }
+
+        public RequestModel(Guid guid, HttpContext context)
+        {
+            Guid = guid;
+            context = context;
+        }
+    }
+}
