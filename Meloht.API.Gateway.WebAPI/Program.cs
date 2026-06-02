@@ -27,6 +27,7 @@ namespace Meloht.API.Gateway.WebAPI
 
 
             app.MapControllers();
+            
 
             app.Run();
         }
