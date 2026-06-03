@@ -17,6 +17,7 @@ namespace Meloht.API.Gateway
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly AppSettingsClient _appSettings;
+        private int _requestTimeout;
 
         private readonly ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>> _targetRequstQueue;
 
@@ -27,7 +28,7 @@ namespace Meloht.API.Gateway
             _appSettings = new AppSettingsClient(_configuration);
             _httpClient = httpClientFactory.CreateClient();
             _channel = Channel.CreateBounded<RequestModel>(GetChannelOptions(_appSettings.PoolSize));
-
+            _requestTimeout = _appSettings.HttpRequestTimeout * 1000;
             lifetime.ApplicationStopping.Register(() =>
             {
                 _channel.Writer.Complete();
@@ -40,7 +41,7 @@ namespace Meloht.API.Gateway
         public async Task ProcessRequestAsync(HttpContext httpContext)
         {
             var tcs = new TaskCompletionSource<HttpResponseMessage>();
-            var ct = new CancellationTokenSource(_appSettings.HttpRequestTimeout * 1000);
+            var ct = new CancellationTokenSource(_requestTimeout);
 
             Guid guid = Guid.NewGuid();
             _targetRequstQueue.TryAdd(guid, tcs);
