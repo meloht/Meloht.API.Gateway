@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Concurrent;
@@ -8,29 +10,40 @@ using System.Threading.Channels;
 
 namespace Meloht.API.Gateway
 {
-    internal class QueueSendClient
+    public class QueueSendClient: IGatewayProxy
     {
 
-        private Channel<RequestModel> _channel;
+        private readonly Channel<RequestModel> _channel;
         private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
+        private readonly AppSettingsClient _appSettings;
 
-        protected ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>> TargetRequstQueue = new ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>>();
+        private readonly ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>> _targetRequstQueue;
 
-        public QueueSendClient(int batchPoolSize, IHttpClientFactory httpClientFactory)
+        public QueueSendClient(IConfiguration configuration, IHttpClientFactory httpClientFactory, IHostApplicationLifetime lifetime)
         {
+            _targetRequstQueue = new ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>>();
+            _configuration = configuration;
+            _appSettings = new AppSettingsClient(_configuration);
             _httpClient = httpClientFactory.CreateClient();
-            _channel = Channel.CreateBounded<RequestModel>(GetChannelOptions(batchPoolSize));
+            _channel = Channel.CreateBounded<RequestModel>(GetChannelOptions(_appSettings.PoolSize));
+
+            lifetime.ApplicationStopping.Register(() =>
+            {
+                _channel.Writer.Complete();
+            });
+
             Task.Run(async () => await ExecuteAsync(""));
         }
 
 
-        public async Task ProcessRequestAsync(HttpContext httpContext, AppSettingsClient appSettings)
+        public async Task ProcessRequestAsync(HttpContext httpContext)
         {
             var tcs = new TaskCompletionSource<HttpResponseMessage>();
-            var ct = new CancellationTokenSource(appSettings.HttpRequestTimeout * 1000);
+            var ct = new CancellationTokenSource(_appSettings.HttpRequestTimeout * 1000);
 
             Guid guid = Guid.NewGuid();
-            TargetRequstQueue.TryAdd(guid, tcs);
+            _targetRequstQueue.TryAdd(guid, tcs);
             ct.Token.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
 
             await _channel.Writer.WriteAsync(new RequestModel(guid, httpContext));
@@ -43,12 +56,12 @@ namespace Meloht.API.Gateway
 
         private async ValueTask ExecuteAsync(string targetUri)
         {
-            await foreach (var item in _channel.Reader.ReadAllAsync())
+            await foreach (RequestModel item in _channel.Reader.ReadAllAsync())
             {
                 using var requestMessage = CreateProxyHttpRequest(item.context, targetUri);
-                 var responseMessage = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, item.context.RequestAborted);
+                var responseMessage = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, item.context.RequestAborted);
 
-                if (TargetRequstQueue.TryRemove(item.Guid, out var tcs))
+                if (_targetRequstQueue.TryRemove(item.Guid, out var tcs))
                 {
                     tcs.TrySetResult(responseMessage);
                 }

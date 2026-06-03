@@ -9,10 +9,12 @@ namespace Meloht.API.Gateway.WebAPI
 
             // Add services to the container.
 
+            builder.Services.AddSingleton<IGatewayProxy, QueueSendClient>();
+
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
+            builder.Services.AddHttpClient();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -24,7 +26,7 @@ namespace Meloht.API.Gateway.WebAPI
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
+            app.UseMiddleware<RequestHandlerMiddleware>();
 
             app.MapControllers();
             
