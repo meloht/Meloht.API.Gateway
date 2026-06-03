@@ -12,18 +12,18 @@ namespace Meloht.API.Gateway
 
         public AppSettingsClient(IConfiguration config)
         {
-            targetUrl = config["TargetUrl"];
+            targetServer = config["TargetServer"];
             httpRequestTimeout = AppUtils.ConvertInt(config["HttpRequestTimeout"], 200);
             poolSize = AppUtils.ConvertInt(config["PoolSize"], 100);
         }
 
         private int poolSize;
         private int httpRequestTimeout;
-        private string targetUrl;
+        private string targetServer;
 
-        public string TargetUrl
+        public string TargetServer
         {
-            get { return targetUrl; }
+            get { return targetServer; }
         }
 
         public int HttpRequestTimeout

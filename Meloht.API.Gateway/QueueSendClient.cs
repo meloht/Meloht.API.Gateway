@@ -10,7 +10,7 @@ using System.Threading.Channels;
 
 namespace Meloht.API.Gateway
 {
-    public class QueueSendClient: IGatewayProxy
+    public class QueueSendClient : IGatewayProxy
     {
 
         private readonly Channel<RequestModel> _channel;
@@ -34,7 +34,7 @@ namespace Meloht.API.Gateway
                 _channel.Writer.Complete();
             });
 
-            Task.Run(async () => await ExecuteAsync(""));
+            Task.Run(async () => await ExecuteAsync());
         }
 
 
@@ -55,12 +55,13 @@ namespace Meloht.API.Gateway
         }
 
 
-        private async ValueTask ExecuteAsync(string targetUri)
+        private async ValueTask ExecuteAsync()
         {
             await foreach (RequestModel item in _channel.Reader.ReadAllAsync())
             {
-                using var requestMessage = CreateProxyHttpRequest(item.context, targetUri);
-                var responseMessage = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, item.context.RequestAborted);
+                string url = GetTargetUri(item.Context, _appSettings.TargetServer);
+                using var requestMessage = CreateProxyHttpRequest(item.Context, url);
+                var responseMessage = await _httpClient.SendAsync(requestMessage);
 
                 if (_targetRequstQueue.TryRemove(item.Guid, out var tcs))
                 {
@@ -72,27 +73,42 @@ namespace Meloht.API.Gateway
 
         private static async Task CopyProxyHttpResponse(HttpContext context, HttpResponseMessage responseMessage)
         {
-            context.Response.StatusCode = (int)responseMessage.StatusCode;
+            context.Response.ContentType = responseMessage.Content.Headers.ContentType?.ToString();
+            context.Response.ContentLength = responseMessage.Content.Headers.ContentLength;
 
-            foreach (var header in responseMessage.Headers)
-            {
-                context.Response.Headers[header.Key] = header.Value.ToArray();
-            }
-
-            foreach (var header in responseMessage.Content.Headers)
-            {
-                context.Response.Headers[header.Key] = header.Value.ToArray();
-
-            }
-
-            // Kestrel自己计算
-            context.Response.Headers.Remove("transfer-encoding");
             await responseMessage.Content.CopyToAsync(context.Response.Body);
         }
 
+        private static string GetTargetUri(HttpContext context, string targetServer)
+        {
+            string http = "http";
+
+            if (context.Request.IsHttps)
+            {
+                http = "https";
+            }
+
+            string url = $"{http}://{targetServer}{context.Request.Path}";
+            if (context.Request.Query != null && context.Request.Query.Count > 0)
+            {
+                List<string> paras = new List<string>();
+                foreach (var item in context.Request.Query)
+                {
+                    if (item.Value.Count > 0)
+                    {
+                        paras.Add($"{item.Key}={item.Value[0]}");
+                    }
+
+                }
+                url = $"{url}?{string.Join("&", paras)}";
+            }
+
+            return url;
+        }
 
         private static HttpRequestMessage CreateProxyHttpRequest(HttpContext context, string targetUri)
         {
+
             var requestMessage = new HttpRequestMessage
             {
                 RequestUri = new Uri(targetUri),

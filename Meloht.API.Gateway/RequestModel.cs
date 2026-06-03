@@ -8,12 +8,13 @@ namespace Meloht.API.Gateway
     internal class RequestModel
     {
         public Guid Guid { get; set; }
-        public HttpContext context { get; set; }
+        public HttpContext Context { get; set; }
+        public string ContentType { get; set; }
 
         public RequestModel(Guid guid, HttpContext context)
         {
             Guid = guid;
-            context = context;
+            Context = context;
         }
     }
 }

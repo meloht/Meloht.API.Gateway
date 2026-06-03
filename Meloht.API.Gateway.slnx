@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="Meloht.API.Gateway.BackendAPI/Meloht.API.Gateway.BackendAPI.csproj" Id="98c5f3a4-2fe9-4b3a-bbd7-16d83fe73e52" />
   <Project Path="Meloht.API.Gateway.WebAPI/Meloht.API.Gateway.WebAPI.csproj" />
   <Project Path="Meloht.API.Gateway/Meloht.API.Gateway.csproj" />
 </Solution>

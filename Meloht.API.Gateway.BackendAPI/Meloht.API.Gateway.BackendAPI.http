@@ -1,0 +1,6 @@
+@Meloht.API.Gateway.BackendAPI_HostAddress = http://localhost:5197
+
+GET {{Meloht.API.Gateway.BackendAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

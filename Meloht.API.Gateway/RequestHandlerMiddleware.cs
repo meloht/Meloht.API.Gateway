@@ -21,7 +21,6 @@ namespace Meloht.API.Gateway
         public async Task InvokeAsync(HttpContext httpContext)
         {
             await _queueService.ProcessRequestAsync(httpContext);
-            await _next(httpContext);
         }
 
 
