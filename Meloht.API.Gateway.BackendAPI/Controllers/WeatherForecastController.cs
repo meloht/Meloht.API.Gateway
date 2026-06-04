@@ -1,3 +1,5 @@
+using Meloht.API.Gateway.BackendAPI.Models;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Meloht.API.Gateway.BackendAPI.Controllers
@@ -21,6 +23,21 @@ namespace Meloht.API.Gateway.BackendAPI.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+        [HttpPost("login")]
+        public IActionResult Login([FromForm] LoginData request)
+        {
+            return Ok(new
+            {
+                request.Username,
+                request.Password
+            });
+        }
+
+        [HttpPost("save")]
+        public IActionResult Save([FromForm] LoginData request)
+        {
+            return Ok(request);
         }
     }
 }
