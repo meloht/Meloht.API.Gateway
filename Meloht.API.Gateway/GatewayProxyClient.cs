@@ -10,7 +10,7 @@ using System.Threading.Channels;
 
 namespace Meloht.API.Gateway
 {
-    public class QueueSendClient : IGatewayProxy
+    public class GatewayProxyClient : IGatewayProxy
     {
 
         private readonly Channel<RequestModel> _channel;
@@ -21,7 +21,7 @@ namespace Meloht.API.Gateway
 
         private readonly ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>> _targetRequstQueue;
 
-        public QueueSendClient(IConfiguration configuration, IHttpClientFactory httpClientFactory, IHostApplicationLifetime lifetime)
+        public GatewayProxyClient(IConfiguration configuration, IHttpClientFactory httpClientFactory, IHostApplicationLifetime lifetime)
         {
             _targetRequstQueue = new ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>>();
             _configuration = configuration;
