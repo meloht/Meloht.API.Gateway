@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Meloht.API.Gateway.Utils;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
@@ -20,6 +21,7 @@ namespace Meloht.API.Gateway
         private int _requestTimeout;
 
         private readonly ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>> _targetRequstQueue;
+        private readonly ObjectPool<RequestModel> _requestModelPool;
 
         public GatewayProxyClient(IConfiguration configuration, IHttpClientFactory httpClientFactory, IHostApplicationLifetime lifetime)
         {
@@ -29,6 +31,7 @@ namespace Meloht.API.Gateway
             _httpClient = httpClientFactory.CreateClient();
             _channel = Channel.CreateBounded<RequestModel>(GetChannelOptions(_appSettings.PoolSize));
             _requestTimeout = _appSettings.HttpRequestTimeout * 1000;
+            _requestModelPool = new ObjectPool<RequestModel>(() => new RequestModel(Guid.Empty, null), maxSize: _appSettings.PoolSize);
             lifetime.ApplicationStopping.Register(() =>
             {
                 _channel.Writer.Complete();
@@ -47,7 +50,10 @@ namespace Meloht.API.Gateway
             _targetRequstQueue.TryAdd(guid, tcs);
             ct.Token.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
 
-            await _channel.Writer.WriteAsync(new RequestModel(guid, httpContext));
+            var requestModel = _requestModelPool.Rent();
+            requestModel.Guid = guid;
+            requestModel.Context = httpContext;
+            await _channel.Writer.WriteAsync(requestModel);
 
             using var res = await tcs.Task;
 
@@ -59,14 +65,22 @@ namespace Meloht.API.Gateway
         {
             await foreach (RequestModel item in _channel.Reader.ReadAllAsync())
             {
-                string url = GetTargetUri(item.Context, _appSettings.TargetServer);
-                using var requestMessage = CreateProxyHttpRequest(item.Context, url);
-                var responseMessage = await _httpClient.SendAsync(requestMessage);
-
-                if (_targetRequstQueue.TryRemove(item.Guid, out var tcs))
+                try
                 {
-                    tcs.TrySetResult(responseMessage);
+                    string url = GetTargetUri(item.Context, _appSettings.TargetServer);
+                    using var requestMessage = CreateProxyHttpRequest(item.Context, url);
+                    var responseMessage = await _httpClient.SendAsync(requestMessage);
+
+                    if (_targetRequstQueue.TryRemove(item.Guid, out var tcs))
+                    {
+                        tcs.TrySetResult(responseMessage);
+                    }
                 }
+                finally
+                {
+                    _requestModelPool.Return(item);
+                }
+               
             }
         }
 
@@ -121,7 +135,7 @@ namespace Meloht.API.Gateway
                 requestMessage.Content = new StreamContent(context.Request.Body);
 
             }
-         
+
 
             // Headers
             foreach (var header in context.Request.Headers)
