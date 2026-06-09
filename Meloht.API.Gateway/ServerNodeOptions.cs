@@ -8,6 +8,6 @@ namespace Meloht.API.Gateway
     {
         public const string TargetServers = "TargetServers";
 
-        public ServerNodeConfig[] Servers { get; set; }
+        public List<ServerNodeConfig> Servers { get; set; }
     }
 }

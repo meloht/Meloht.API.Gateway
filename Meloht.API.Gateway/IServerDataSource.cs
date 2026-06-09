@@ -4,10 +4,8 @@ using System.Text;
 
 namespace Meloht.API.Gateway
 {
-    public interface IServerProvider
+    public interface IServerDataSource
     {
-
-        IReadOnlyList<ServerNode> GetServers();
-
+        List<ServerNodeConfig> GetServerNodes(string connectionString);
     }
 }

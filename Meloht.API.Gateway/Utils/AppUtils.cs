@@ -40,5 +40,50 @@ namespace Meloht.API.Gateway.Utils
                 mStrSize = (factSize / 1024.00 / 1024.00 / 1024.00).ToString("F2") + " G";
             return mStrSize;
         }
+
+
+        public static void UpdateData(List<ServerNodeConfig> servers, Dictionary<string, ServerNode> serversDict, List<ServerNode> serversList)
+        {
+            HashSet<string> updatedAddresses = new HashSet<string>();
+            serversList.Clear();
+            foreach (var item in servers)
+            {
+                updatedAddresses.Add(item.Address);
+
+                if (serversDict.TryGetValue(item.Address, out var node))
+                {
+                    node.Weight = item.Weight;
+                    node.Name = item.Name;
+                    node.Address = item.Address;
+                    node.Id = item.Id;
+                    serversList.Add(node);
+                }
+                else
+                {
+                    var nodeNew = new ServerNode
+                    {
+                        Id = item.Id,
+                        Name = item.Name,
+                        Address = item.Address,
+                        Weight = item.Weight
+                    };
+                    serversList.Add(nodeNew);
+                    serversDict.Add(item.Address, nodeNew);
+                }
+            }
+            List<string> toRemove = new List<string>();
+            foreach (var item in serversDict.Keys)
+            {
+                if (!updatedAddresses.Contains(item))
+                {
+                    toRemove.Add(item);
+                }
+            }
+
+            foreach (var item in toRemove)
+            {
+                serversDict.Remove(item);
+            }
+        }
     }
 }
