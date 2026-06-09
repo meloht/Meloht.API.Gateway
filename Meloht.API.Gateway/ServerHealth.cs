@@ -4,10 +4,12 @@ using System.Text;
 
 namespace Meloht.API.Gateway
 {
-    public interface IServerProvider 
+    public enum ServerHealth
     {
+        Unknown,
 
-        public IReadOnlyList<ServerNode> GetServers();
+        Healthy,
 
+        Unhealthy,
     }
 }

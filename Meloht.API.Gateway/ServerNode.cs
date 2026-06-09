@@ -5,21 +5,15 @@ using System.Text;
 
 namespace Meloht.API.Gateway
 {
-    public class ServerNode
+    public class ServerNode : ServerNodeConfig
     {
-        public int Id { get; set; } 
-        public string Name { get; set; }
-        public int Port { get; set; }
-        public string Host { get; set; }
-
-        public int Weight { get; set; }
-
+        public ServerHealth Health { get; set; } = ServerHealth.Unknown;
         public int ConcurrentRequestCount
         {
             get => ConcurrencyCounter.Value;
             set => ConcurrencyCounter.Value = value;
         }
-
+        
         internal AtomicCounter ConcurrencyCounter { get; } = new AtomicCounter();
     }
 }
