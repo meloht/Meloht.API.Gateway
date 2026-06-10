@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Meloht.API.Gateway
 {
-    internal class RequestModel : IDisposable
+    public class RequestModel : IDisposable
     {
         public Guid Guid { get; set; }
         public HttpContext Context { get; set; }

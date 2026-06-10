@@ -14,13 +14,12 @@ namespace Meloht.API.Gateway.WebAPI
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
+            builder.Services.AddGatewayServerProviderJson(builder.Configuration);
+            builder.Services.AddGatewaySettings();
 
-            builder.Services.AddGatewaySettings(builder.Configuration);
-            builder.Services.AddGatewayServerProviderJson();
 
+            var app = builder.Build();
 
-             var app = builder.Build();
-            
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -34,7 +33,7 @@ namespace Meloht.API.Gateway.WebAPI
             app.UseGateway();
 
             app.MapControllers();
-            
+
 
             app.Run();
         }

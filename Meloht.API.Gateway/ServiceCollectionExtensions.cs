@@ -11,11 +11,12 @@ namespace Meloht.API.Gateway
     public static class ServiceCollectionExtensions
     {
         internal const string GatewayClient = "GatewayClient";
-        public static IServiceCollection AddGatewaySettings(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddGatewaySettings(this IServiceCollection services)
         {
-            services.AddSingleton<IGatewayProxy, GatewayProxyForward>();
+            services.AddSingleton<IGatewayProxy, GatewayProxyHandler>();
             services.AddHttpClient(GatewayClient);
-            services.Configure<ServerNodeOptions>(configuration.GetSection(ServerNodeOptions.TargetServers));
+            services.AddHostedService<BackgroundForward>();
+
             return services;
         }
 
@@ -24,8 +25,9 @@ namespace Meloht.API.Gateway
             return builder.UseMiddleware<RequestHandlerMiddleware>();
         }
 
-        public static void AddGatewayServerProviderJson(this IServiceCollection services)
+        public static void AddGatewayServerProviderJson(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<ServerNodeOptions>(configuration.GetSection(ServerNodeOptions.TargetServers));
             services.AddSingleton<IServerProvider, ServerProviderJson>();
         }
 
