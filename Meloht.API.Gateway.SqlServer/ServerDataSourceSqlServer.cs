@@ -1,12 +1,24 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Data.Common;
 
 namespace Meloht.API.Gateway.SqlServer
 {
-    public class ServerDataSourceSqlServer : IServerDataSource
+    public class ServerDataSourceSqlServer : ServerProviderDatabase
     {
-        public List<ServerNodeConfig> GetServerNodes(string connectionString)
+        public ServerDataSourceSqlServer(IConfiguration config, ILogger<ServerProviderDatabase> logger) : base(config, logger)
         {
-            return null;
+        }
+
+        protected override DbCommand GetDbCommand(string sql, DbConnection connection)
+        {
+            return new SqlCommand(sql, (SqlConnection)connection);
+        }
+
+        protected override DbConnection GetDbConnection(string connectionString)
+        {
+            return new SqlConnection(connectionString);
         }
     }
 }

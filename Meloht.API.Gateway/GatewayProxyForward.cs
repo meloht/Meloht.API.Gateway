@@ -11,7 +11,7 @@ using System.Threading.Channels;
 
 namespace Meloht.API.Gateway
 {
-    public class GatewayProxyClient : IGatewayProxy
+    public class GatewayProxyForward : IGatewayProxy
     {
 
         private readonly Channel<RequestModel> _channel;
@@ -23,12 +23,13 @@ namespace Meloht.API.Gateway
         private readonly ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>> _targetRequstQueue;
         private readonly ObjectPool<RequestModel> _requestModelPool;
 
-        public GatewayProxyClient(IConfiguration configuration, IHttpClientFactory httpClientFactory, IHostApplicationLifetime lifetime)
+        public GatewayProxyForward(IConfiguration configuration, IHttpClientFactory httpClientFactory, IHostApplicationLifetime lifetime)
         {
             _targetRequstQueue = new ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>>();
             _configuration = configuration;
             _appSettings = new AppSettingsClient(_configuration);
-            _httpClient = httpClientFactory.CreateClient();
+            _httpClient = httpClientFactory.CreateClient(ServiceCollectionExtensions.GatewayClient);
+
             _channel = Channel.CreateBounded<RequestModel>(GetChannelOptions(_appSettings.PoolSize));
             _requestTimeout = _appSettings.HttpRequestTimeout * 1000;
             _requestModelPool = new ObjectPool<RequestModel>(() => new RequestModel(Guid.Empty, null), maxSize: _appSettings.PoolSize);

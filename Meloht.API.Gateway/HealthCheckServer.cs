@@ -18,7 +18,7 @@ namespace Meloht.API.Gateway
         public HealthCheckServer(IServerProvider serverProvider, IHttpClientFactory httpClientFactory, ILogger<HealthCheckServer> logger)
         {
             _serverProvider = serverProvider;
-            _httpClient = httpClientFactory.CreateClient();
+            _httpClient = httpClientFactory.CreateClient(ServiceCollectionExtensions.GatewayClient);
             _logger = logger;
             _parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = 100 };
 

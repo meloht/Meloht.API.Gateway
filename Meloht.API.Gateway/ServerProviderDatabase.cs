@@ -1,4 +1,5 @@
 ﻿using Meloht.API.Gateway.Utils;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -21,9 +22,12 @@ namespace Meloht.API.Gateway
         private Dictionary<string, ServerNode> _serversDict;
         private readonly List<ServerNode> _serversList;
         private readonly object _lock = new();
-        public ServerProviderDatabase()
+        public ServerProviderDatabase(IConfiguration config, ILogger<ServerProviderDatabase> logger)
         {
-
+            _serversDict = new Dictionary<string, ServerNode>();
+            _serversList = new List<ServerNode>();
+            _connectionString = config["ConnectionString"];
+            _logger = logger;
         }
 
 
