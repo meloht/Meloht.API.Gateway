@@ -8,7 +8,7 @@ namespace Meloht.API.Gateway.ServerProviders
     {
 
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string UniqueName { get; set; }
 
         public string Address { get; set; }
 

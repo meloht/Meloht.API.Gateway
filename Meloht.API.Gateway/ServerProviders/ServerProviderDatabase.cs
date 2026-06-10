@@ -1,4 +1,4 @@
-﻿using Meloht.API.Gateway.Utils;
+﻿using Meloht.API.Gateway.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -64,7 +64,7 @@ namespace Meloht.API.Gateway.ServerProviders
                     servers.Add(new ServerNodeConfig
                     {
                         Id = id,
-                        Name = name,
+                        UniqueName = name,
                         Address = address,
                         Weight = weight
                     });

@@ -1,5 +1,5 @@
 ﻿using Meloht.API.Gateway.LoadBalancing;
-using Meloht.API.Gateway.Utils;
+using Meloht.API.Gateway.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;

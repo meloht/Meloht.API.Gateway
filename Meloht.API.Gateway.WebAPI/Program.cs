@@ -15,7 +15,7 @@ namespace Meloht.API.Gateway.WebAPI
             builder.Services.AddOpenApi();
 
             builder.Services.AddGatewayServerProviderJson(builder.Configuration);
-            builder.Services.AddGatewaySettings();
+            builder.Services.AddGatewaySettings(builder.Configuration);
 
 
             var app = builder.Build();

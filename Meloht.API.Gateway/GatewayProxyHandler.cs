@@ -1,4 +1,4 @@
-﻿using Meloht.API.Gateway.Utils;
+﻿using Meloht.API.Gateway.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -16,10 +16,8 @@ namespace Meloht.API.Gateway
     {
 
         private readonly Channel<RequestModel> _channel;
-
-        private readonly IConfiguration _configuration;
-        private readonly AppSettingsClient _appSettings;
-        private int _requestTimeout;
+        private readonly int _requestTimeout;
+        private readonly int _poolSize;
 
         private readonly ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>> _targetRequstQueue;
         private readonly ObjectPool<RequestModel> _requestModelPool;
@@ -33,19 +31,19 @@ namespace Meloht.API.Gateway
         public GatewayProxyHandler(IConfiguration configuration, IHostApplicationLifetime lifetime, ILogger<GatewayProxyHandler> logger)
         {
             _targetRequstQueue = new ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>>();
-            _configuration = configuration;
-            _appSettings = new AppSettingsClient(_configuration);
+
+            _requestTimeout = configuration.GetValue<int>(AppSettings.HttpRequestTimeout) * 1000;
+            _poolSize = configuration.GetValue<int>(AppSettings.PoolSize);
 
             _logger = logger;
 
-            _channel = Channel.CreateBounded<RequestModel>(GetChannelOptions(_appSettings.PoolSize));
-            _requestTimeout = _appSettings.HttpRequestTimeout * 1000;
-            _requestModelPool = new ObjectPool<RequestModel>(() => new RequestModel(Guid.Empty, null), maxSize: _appSettings.PoolSize);
+            _channel = Channel.CreateBounded<RequestModel>(GetChannelOptions(_poolSize));
+          
+            _requestModelPool = new ObjectPool<RequestModel>(() => new RequestModel(Guid.Empty, null), maxSize: _poolSize);
             lifetime.ApplicationStopping.Register(() =>
             {
                 _channel.Writer.TryComplete();
             });
-
         }
 
 
@@ -101,7 +99,6 @@ namespace Meloht.API.Gateway
         }
 
 
-      
         void IGatewayProxy.ReturnPool(RequestModel item)
         {
             _requestModelPool.Return(item);

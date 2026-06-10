@@ -19,7 +19,7 @@ namespace Meloht.API.Gateway.LoadBalancing
         public HealthCheckServer(IServerProvider serverProvider, IHttpClientFactory httpClientFactory, ILogger<HealthCheckServer> logger)
         {
             _serverProvider = serverProvider;
-            _httpClient = httpClientFactory.CreateClient(ServiceCollectionExtensions.GatewayClient);
+            _httpClient = httpClientFactory.CreateClient(AppSettings.GatewayClient);
             _logger = logger;
             _parallelOptions = new ParallelOptions() {  MaxDegreeOfParallelism = Environment.ProcessorCount };
         }

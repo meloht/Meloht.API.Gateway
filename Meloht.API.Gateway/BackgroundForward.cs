@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Meloht.API.Gateway.LoadBalancing;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,16 +14,17 @@ namespace Meloht.API.Gateway
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<GatewayProxyHandler> _logger;
-        private readonly AppSettingsClient _appSettings;
         private readonly IGatewayProxy _gatewayProxy;
+        private readonly ILoadBalancingPolicy _loadBalancingPolicy;
+        private readonly IServerProvider _serverProvider;
 
-        public BackgroundForward(IHttpClientFactory httpClientFactory, ILogger<GatewayProxyHandler> logger, IGatewayProxy gatewayProxy)
+        public BackgroundForward(IHttpClientFactory httpClientFactory, ILoadBalancingPolicy loadBalancingPolicy, IServerProvider serverProvider, ILogger<GatewayProxyHandler> logger, IGatewayProxy gatewayProxy)
         {
             _logger = logger;
-            _gatewayProxy= gatewayProxy;
-
-
-            _httpClient = httpClientFactory.CreateClient(ServiceCollectionExtensions.GatewayClient);
+            _loadBalancingPolicy = loadBalancingPolicy;
+            _serverProvider = serverProvider;
+            _gatewayProxy = gatewayProxy;
+            _httpClient = httpClientFactory.CreateClient(AppSettings.GatewayClient);
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -37,12 +39,25 @@ namespace Meloht.API.Gateway
             }
             await Task.WhenAll(tasks);
         }
-
+        private string GetTargetServer()
+        {
+            var servers = _serverProvider.GetServers();
+            if (servers == null || servers.Count == 0)
+            {
+                throw new Exception("No target servers available.");
+            }
+            var targetServer = _loadBalancingPolicy.PickDestination(servers);
+            if (targetServer == null)
+            {
+                throw new Exception("Failed to select target server.");
+            }
+            return targetServer.Address;
+        }
         private async Task ForwardRequestAsync(RequestModel item)
         {
             try
             {
-                string url = GetTargetUri(item.Context, _appSettings.TargetServer);
+                string url = GetTargetUri(item.Context, GetTargetServer());
                 using var requestMessage = CreateProxyHttpRequest(item.Context, url);
                 var responseMessage = await _httpClient.SendAsync(requestMessage);
 

@@ -1,4 +1,4 @@
-﻿using Meloht.API.Gateway.Utils;
+﻿using Meloht.API.Gateway.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Meloht.API.Gateway.ServerProviders
 {
-    public class ServerProviderJson : IServerProvider
+    public sealed class ServerProviderJson : IServerProvider
     {
         private readonly Dictionary<string, ServerNode> _serversDict;
         private readonly List<ServerNode> _serversList;

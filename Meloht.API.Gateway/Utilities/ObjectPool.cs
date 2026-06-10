@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Meloht.API.Gateway.Utils
+namespace Meloht.API.Gateway.Utilities
 {
     internal sealed class ObjectPool<T> : IDisposable where T : IDisposable
     {

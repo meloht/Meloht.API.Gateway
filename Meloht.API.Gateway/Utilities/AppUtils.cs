@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Meloht.API.Gateway.Utils
+namespace Meloht.API.Gateway.Utilities
 {
     internal static class AppUtils
     {
@@ -54,7 +54,7 @@ namespace Meloht.API.Gateway.Utils
                 if (serversDict.TryGetValue(item.Address, out var node))
                 {
                     node.Weight = item.Weight;
-                    node.Name = item.Name;
+                    node.UniqueName = item.UniqueName;
                     node.Address = item.Address;
                     node.Id = item.Id;
                     serversList.Add(node);
@@ -64,7 +64,7 @@ namespace Meloht.API.Gateway.Utils
                     var nodeNew = new ServerNode
                     {
                         Id = item.Id,
-                        Name = item.Name,
+                        UniqueName = item.UniqueName,
                         Address = item.Address,
                         Weight = item.Weight
                     };
