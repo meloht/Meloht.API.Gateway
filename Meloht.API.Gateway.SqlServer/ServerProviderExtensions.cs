@@ -8,7 +8,7 @@ namespace Meloht.API.Gateway.SqlServer
 {
     public static class ServerProviderExtensions
     {
-        public static void AddServerProviderSqlServer(this IServiceCollection services, IConfiguration configuration)
+        public static void AddServerProviderSqlServer(this IServiceCollection services)
         {
             services.AddSingleton<IServerProvider, ServerDataSourceSqlServer>();
         }
