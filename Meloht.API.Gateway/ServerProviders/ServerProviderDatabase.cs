@@ -26,7 +26,7 @@ namespace Meloht.API.Gateway.ServerProviders
         {
             _serversDict = new Dictionary<string, ServerNode>();
             _serversList = new List<ServerNode>();
-            _connectionString = config["ConnectionString"];
+            _connectionString = AppSettings.GetConnectionString(config);
             _logger = logger;
         }
 

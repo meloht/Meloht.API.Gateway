@@ -14,13 +14,22 @@ namespace Meloht.API.Gateway
         public const string PoolSize = "Gateway:PoolSize";
         public const string LoadBalancingPolicy = "Gateway:LoadBalancingPolicy";
         public const string GatewayClient = "GatewayClient";
+        public const string ConnectionString = "Gateway:ConnectionString";
 
         public static string GetLoadBalancingPolicy(IConfiguration configuration)
         {
             string loadBalancingPolicy = configuration.GetValue<string>(LoadBalancingPolicy, LoadBalancingPolicies.RoundRobin);
             return loadBalancingPolicy;
         }
-
+        public static string GetConnectionString(IConfiguration configuration)
+        {
+            var connectionString = configuration.GetValue<string>(ConnectionString);
+            if(string.IsNullOrEmpty(connectionString))
+            {
+                throw new ArgumentException("Connection string is not configured.");
+            }
+            return connectionString;
+        }
         public static int GetHttpRequestTimeout(IConfiguration configuration)
         {
             int httpRequestTimeout = configuration.GetValue<int>(HttpRequestTimeout, 120);
