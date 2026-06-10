@@ -10,11 +10,12 @@ namespace Meloht.API.Gateway
 {
     internal class AppSettings
     {
-        public const string HttpRequestTimeout = "Gateway:HttpRequestTimeout";
-        public const string PoolSize = "Gateway:PoolSize";
-        public const string LoadBalancingPolicy = "Gateway:LoadBalancingPolicy";
+        private const string HttpRequestTimeout = "Gateway:HttpRequestTimeout";
+        private const string PoolSize = "Gateway:PoolSize";
+        private const string LoadBalancingPolicy = "Gateway:LoadBalancingPolicy";
         public const string GatewayClient = "GatewayClient";
-        public const string ConnectionString = "Gateway:ConnectionString";
+        private const string ConnectionString = "Gateway:ConnectionString";
+        private const string HealthCheckEnable = "Gateway:HealthCheckEnable";
 
         public static string GetLoadBalancingPolicy(IConfiguration configuration)
         {
@@ -39,6 +40,12 @@ namespace Meloht.API.Gateway
         {
             int poolSize = configuration.GetValue<int>(PoolSize, 100);
             return poolSize;
+        }
+
+        public static bool GetHealthCheckEnable(IConfiguration configuration)
+        {
+            bool healthCheckEnable = configuration.GetValue<bool>(HealthCheckEnable, false);
+            return healthCheckEnable;
         }
     }
 }

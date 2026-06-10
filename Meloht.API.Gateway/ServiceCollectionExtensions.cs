@@ -23,10 +23,18 @@ namespace Meloht.API.Gateway
             services.AddSingleton<IGatewayProxy, GatewayProxyHandler>();
             services.AddHttpClient(AppSettings.GatewayClient);
             services.AddHostedService<BackgroundForward>();
+            AddHealthCheck(services, configuration);
 
             return services;
         }
-
+        private static void AddHealthCheck(IServiceCollection services, IConfiguration configuration)
+        {
+            bool bl = AppSettings.GetHealthCheckEnable(configuration);
+            if (bl)
+            {
+                services.AddHostedService<HealthCheckServer>();
+            }
+        }
         private static void AddLoadBalancingPolicy(IServiceCollection services, IConfiguration configuration)
         {
             string loadBalancingPolicy = AppSettings.GetLoadBalancingPolicy(configuration);
