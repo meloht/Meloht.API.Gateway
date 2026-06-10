@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Meloht.API.Gateway
+namespace Meloht.API.Gateway.LoadBalance
 {
     public class HealthCheckServer : BackgroundService
     {
