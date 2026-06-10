@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Meloht.API.Gateway
+namespace Meloht.API.Gateway.ServerProviders
 {
     public class ServerProviderJson : IServerProvider
     {

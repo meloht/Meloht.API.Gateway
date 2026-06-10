@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Meloht.API.Gateway.ServerProviders;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -20,8 +21,7 @@ namespace Meloht.API.Gateway
             _serverProvider = serverProvider;
             _httpClient = httpClientFactory.CreateClient(ServiceCollectionExtensions.GatewayClient);
             _logger = logger;
-            _parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = 100 };
-
+            _parallelOptions = new ParallelOptions() {  MaxDegreeOfParallelism = Environment.ProcessorCount };
         }
 
 

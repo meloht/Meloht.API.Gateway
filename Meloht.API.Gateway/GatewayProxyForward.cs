@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Concurrent;
@@ -23,11 +24,16 @@ namespace Meloht.API.Gateway
         private readonly ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>> _targetRequstQueue;
         private readonly ObjectPool<RequestModel> _requestModelPool;
 
-        public GatewayProxyForward(IConfiguration configuration, IHttpClientFactory httpClientFactory, IHostApplicationLifetime lifetime)
+        private readonly ILogger<GatewayProxyForward> _logger;
+
+        public GatewayProxyForward(IConfiguration configuration, IHttpClientFactory httpClientFactory, IHostApplicationLifetime lifetime, ILogger<GatewayProxyForward> logger)
         {
             _targetRequstQueue = new ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>>();
             _configuration = configuration;
             _appSettings = new AppSettingsClient(_configuration);
+
+            _logger = logger;
+
             _httpClient = httpClientFactory.CreateClient(ServiceCollectionExtensions.GatewayClient);
 
             _channel = Channel.CreateBounded<RequestModel>(GetChannelOptions(_appSettings.PoolSize));
@@ -66,22 +72,30 @@ namespace Meloht.API.Gateway
         {
             await foreach (RequestModel item in _channel.Reader.ReadAllAsync())
             {
-                try
-                {
-                    string url = GetTargetUri(item.Context, _appSettings.TargetServer);
-                    using var requestMessage = CreateProxyHttpRequest(item.Context, url);
-                    var responseMessage = await _httpClient.SendAsync(requestMessage);
+                await ForwardRequestAsync(item);
+            }
+        }
 
-                    if (_targetRequstQueue.TryRemove(item.Guid, out var tcs))
-                    {
-                        tcs.TrySetResult(responseMessage);
-                    }
-                }
-                finally
+        private async Task ForwardRequestAsync(RequestModel item)
+        {
+            try
+            {
+                string url = GetTargetUri(item.Context, _appSettings.TargetServer);
+                using var requestMessage = CreateProxyHttpRequest(item.Context, url);
+                var responseMessage = await _httpClient.SendAsync(requestMessage);
+
+                if (_targetRequstQueue.TryRemove(item.Guid, out var tcs))
                 {
-                    _requestModelPool.Return(item);
+                    tcs.TrySetResult(responseMessage);
                 }
-               
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error forwarding request");
+            }
+            finally
+            {
+                _requestModelPool.Return(item);
             }
         }
 

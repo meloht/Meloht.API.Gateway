@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
 
-namespace Meloht.API.Gateway
+namespace Meloht.API.Gateway.ServerProviders
 {
     public abstract class ServerProviderDatabase : IServerProvider
     {
