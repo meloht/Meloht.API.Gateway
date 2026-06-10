@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Meloht.API.Gateway.LoadBalance
+namespace Meloht.API.Gateway.LoadBalancing
 {
     public enum ServerHealth
     {

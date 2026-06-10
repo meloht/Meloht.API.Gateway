@@ -1,4 +1,4 @@
-﻿using Meloht.API.Gateway.LoadBalance;
+﻿using Meloht.API.Gateway.LoadBalancing;
 using Meloht.API.Gateway.Utils;
 using System;
 using System.Collections.Generic;
