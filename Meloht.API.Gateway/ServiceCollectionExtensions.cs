@@ -30,6 +30,17 @@ namespace Meloht.API.Gateway
 
             return services;
         }
+        public static IApplicationBuilder UseGateway(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<RequestHandlerMiddleware>();
+        }
+
+        public static void AddGatewayServerProviderJson(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<ServerNodeOptions>(configuration.GetSection(ServerNodeOptions.TargetServers));
+            services.AddSingleton<IServerProvider, ServerProviderJson>();
+        }
+
         private static void AddHealthCheck(IServiceCollection services, IConfiguration configuration)
         {
             bool bl = AppSettings.GetHealthCheckEnable(configuration);
@@ -69,16 +80,7 @@ namespace Meloht.API.Gateway
 
         }
 
-        public static IApplicationBuilder UseGateway(this IApplicationBuilder builder)
-        {
-            return builder.UseMiddleware<RequestHandlerMiddleware>();
-        }
-
-        public static void AddGatewayServerProviderJson(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.Configure<ServerNodeOptions>(configuration.GetSection(ServerNodeOptions.TargetServers));
-            services.AddSingleton<IServerProvider, ServerProviderJson>();
-        }
+      
 
     }
 }
