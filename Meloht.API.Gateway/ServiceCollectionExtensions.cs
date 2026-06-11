@@ -1,4 +1,5 @@
-﻿using Meloht.API.Gateway.LoadBalancing;
+﻿using Meloht.API.Gateway.HostServices;
+using Meloht.API.Gateway.LoadBalancing;
 using Meloht.API.Gateway.ServerProviders;
 using Meloht.API.Gateway.Utilities;
 using Microsoft.AspNetCore.Builder;
@@ -17,12 +18,14 @@ namespace Meloht.API.Gateway
         public static IServiceCollection AddGatewaySettings(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IRandomFactory, RandomFactory>();
+            services.AddHttpClient(AppSettings.GatewayClient);
+            services.AddSingleton<HealthCheckServer>();
 
             AddLoadBalancingPolicy(services, configuration);
 
             services.AddSingleton<IGatewayProxy, GatewayProxyHandler>();
-            services.AddHttpClient(AppSettings.GatewayClient);
-            services.AddHostedService<BackgroundForward>();
+           
+            services.AddHostedService<BackgroundForwardService>();
             AddHealthCheck(services, configuration);
 
             return services;
@@ -32,7 +35,7 @@ namespace Meloht.API.Gateway
             bool bl = AppSettings.GetHealthCheckEnable(configuration);
             if (bl)
             {
-                services.AddHostedService<HealthCheckServer>();
+                services.AddHostedService<ServerHealthCheckService>();
             }
         }
         private static void AddLoadBalancingPolicy(IServiceCollection services, IConfiguration configuration)

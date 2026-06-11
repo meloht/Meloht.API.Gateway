@@ -6,9 +6,9 @@ using System.Data.Common;
 
 namespace Meloht.API.Gateway.SqlServer
 {
-    public class ServerDataSourceSqlServer : DatabaseAutoUpdate
+    public class ServerDataSourceSqlServer : DatabaseReadServerData
     {
-        public ServerDataSourceSqlServer(IConfiguration config, ILogger<ServerProviderDatabase> logger) : base(config, logger)
+        public ServerDataSourceSqlServer(IConfiguration config, ILogger<DatabaseReadServerData> logger, IServiceProvider serviceProvider) : base(config, logger, serviceProvider)
         {
         }
 

@@ -9,9 +9,9 @@ using System.Text;
 
 namespace Meloht.API.Gateway.MySql
 {
-    public class ServerDataSourceMySql : DatabaseAutoUpdate
+    public class ServerDataSourceMySql : DatabaseReadServerData
     {
-        public ServerDataSourceMySql(IConfiguration config, ILogger<ServerProviderDatabase> logger) : base(config, logger)
+        public ServerDataSourceMySql(IConfiguration config, ILogger<DatabaseReadServerData> logger, IServiceProvider serviceProvider) : base(config, logger, serviceProvider)
         {
         }
 

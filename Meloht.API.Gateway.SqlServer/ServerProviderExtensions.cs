@@ -1,4 +1,5 @@
-﻿using Meloht.API.Gateway.ServerProviders;
+﻿using Meloht.API.Gateway.HostServices;
+using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -11,7 +12,8 @@ namespace Meloht.API.Gateway.SqlServer
     {
         public static void AddServerProviderSqlServer(this IServiceCollection services)
         {
-            services.AddHostedService<ServerDataSourceSqlServer>();
+            services.AddHostedService<DatabaseAutoUpdateService>();
+            services.AddSingleton<DatabaseReadServerData, ServerDataSourceSqlServer>();
             services.AddSingleton<IServerProvider, ServerProviderDatabase>();
         }
     }

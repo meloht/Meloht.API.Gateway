@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Channels;
 
-namespace Meloht.API.Gateway
+namespace Meloht.API.Gateway.HostServices
 {
-    public class BackgroundForward : BackgroundService
+    internal class BackgroundForwardService : BackgroundService
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<GatewayProxyHandler> _logger;
@@ -18,7 +18,7 @@ namespace Meloht.API.Gateway
         private readonly ILoadBalancingPolicy _loadBalancingPolicy;
         private readonly IServerProvider _serverProvider;
 
-        public BackgroundForward(IHttpClientFactory httpClientFactory, ILoadBalancingPolicy loadBalancingPolicy, IServerProvider serverProvider, ILogger<GatewayProxyHandler> logger, IGatewayProxy gatewayProxy)
+        public BackgroundForwardService(IHttpClientFactory httpClientFactory, ILoadBalancingPolicy loadBalancingPolicy, IServerProvider serverProvider, ILogger<GatewayProxyHandler> logger, IGatewayProxy gatewayProxy)
         {
             _logger = logger;
             _loadBalancingPolicy = loadBalancingPolicy;
@@ -41,7 +41,7 @@ namespace Meloht.API.Gateway
         }
         private string GetTargetServer()
         {
-            var servers = _serverProvider.GetServers();
+            var servers = _serverProvider.GetHealthServers();
             if (servers == null || servers.Count == 0)
             {
                 throw new Exception("No target servers available.");

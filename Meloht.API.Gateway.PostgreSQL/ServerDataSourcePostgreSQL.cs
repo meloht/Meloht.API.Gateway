@@ -8,9 +8,9 @@ using System.Text;
 
 namespace Meloht.API.Gateway.PostgreSQL
 {
-    public class ServerDataSourcePostgreSQL: DatabaseAutoUpdate
+    public class ServerDataSourcePostgreSQL: DatabaseReadServerData
     {
-        public ServerDataSourcePostgreSQL(IConfiguration config, ILogger<ServerProviderDatabase> logger) : base(config, logger)
+        public ServerDataSourcePostgreSQL(IConfiguration config, ILogger<DatabaseReadServerData> logger, IServiceProvider serviceProvider) : base(config, logger, serviceProvider)
         {
           
            

@@ -11,30 +11,23 @@ namespace Meloht.API.Gateway.ServerProviders
 {
     public class ServerProviderDatabase : IServerProvider
     {
+        private readonly DatabaseReadServerData _data;
 
-        private readonly ILogger<ServerProviderDatabase> _logger;
-
-        private readonly Dictionary<string, ServerNode> _serversDict;
-        private readonly List<ServerNode> _serversList;
-        private readonly object _lock = new();
-        public ServerProviderDatabase(ILogger<ServerProviderDatabase> logger)
+        public ServerProviderDatabase(DatabaseReadServerData data)
         {
-            _serversDict = new Dictionary<string, ServerNode>();
-            _serversList = new List<ServerNode>();
-
-            _logger = logger;
+            _data = data;
         }
 
-
-        public IReadOnlyList<ServerNode> GetServers()
+        public IReadOnlyList<ServerNode> GetHealthServers()
         {
-            lock (_lock)
-            {
-                return _serversList;
-            }
+            return _data.GetHealthyServers();
         }
 
+        public IReadOnlyList<ServerNode> GetOriginalServers()
+        {
+            return _data.GetAllServers();
+        }
 
-
+       
     }
 }
