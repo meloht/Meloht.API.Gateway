@@ -14,13 +14,14 @@ namespace Meloht.API.Gateway.LoadBalancing
 
         private readonly AtomicCounter _counters = new();
 
-        public ServerNode? PickDestination(IReadOnlyList<ServerNode> serverNodes)
+        public ServerNode? PickDestination(IReadOnlyList<ServerNode> serverNodes, int weightSum)
         {
             if (serverNodes.Count == 0)
             {
                 return null;
             }
 
+            int[] weights = new int[serverNodes.Count];
             var offset = _counters.Increment() - 1;
 
             // Preventing negative indices from being computed by masking off sign.

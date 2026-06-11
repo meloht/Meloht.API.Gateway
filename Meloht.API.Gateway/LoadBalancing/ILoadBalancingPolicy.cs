@@ -14,6 +14,6 @@ namespace Meloht.API.Gateway.LoadBalancing
         ///  A unique identifier for this load balancing policy. This will be referenced from config.
         /// </summary>
         string Name { get; }
-        ServerNode? PickDestination(IReadOnlyList<ServerNode> serverNodes);
+        ServerNode? PickDestination(IReadOnlyList<ServerNode> serverNodes, int weightSum);
     }
 }

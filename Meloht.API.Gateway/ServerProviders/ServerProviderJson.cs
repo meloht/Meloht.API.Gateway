@@ -11,44 +11,30 @@ using System.Text;
 
 namespace Meloht.API.Gateway.ServerProviders
 {
-    public sealed class ServerProviderJson : IServerProvider
+    public sealed class ServerProviderJson : ServerBase, IServerProvider
     {
-        private readonly Dictionary<string, ServerNode> _serversDict;
-        private readonly List<ServerNode> _serversOriginalList;
-        private readonly List<ServerNode> _serversHealthList;
-
-        private readonly object _lock = new();
-
         private readonly IOptionsMonitor<ServerNodeOptions> _options;
-        private readonly HealthCheckServer? _healthCheckServer;
         private readonly ILogger<ServerProviderJson> _log;
         private readonly ParallelOptions _parallelOptions;
 
-        public ServerProviderJson(IOptionsMonitor<ServerNodeOptions> options, IServiceProvider provider, ILogger<ServerProviderJson> logger)
+        public ServerProviderJson(IOptionsMonitor<ServerNodeOptions> options, IServiceProvider provider, ILogger<ServerProviderJson> logger) : base(provider)
         {
             _options = options;
             _log = logger;
-            _options.OnChange(OnConfigChangedAsync);
-            _healthCheckServer = provider.GetService<HealthCheckServer>();
-            _serversDict = new Dictionary<string, ServerNode>();
-            _serversOriginalList = new List<ServerNode>();
-            _serversHealthList = new List<ServerNode>();
+            _options.OnChange(OnConfigChanged);
             _parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount };
+            OnConfigChanged(_options.CurrentValue);
         }
 
-        private void OnConfigChangedAsync(ServerNodeOptions options)
+        private void OnConfigChanged(ServerNodeOptions options)
         {
             if (options.Servers != null && options.Servers.Count > 0)
             {
-
                 try
                 {
                     List<ServerNode> serverNodes = AppUtils.UpdateData(options.Servers, _serversDict);
-                    lock (_lock)
-                    {
-                        _serversOriginalList.Clear();
-                        _serversOriginalList.AddRange(serverNodes);
-                    }
+
+                    UpdateOriginalList(serverNodes);
 
                     if (_healthCheckServer != null)
                     {
@@ -56,11 +42,7 @@ namespace Meloht.API.Gateway.ServerProviders
                         Task.WaitAll(task);
                     }
 
-                    lock (_lock)
-                    {
-                        _serversHealthList.Clear();
-                        _serversHealthList.AddRange(serverNodes.Where(p => p.Health == ServerHealth.Healthy));
-                    }
+                    UpdateHealthlList(serverNodes);
                 }
                 catch (Exception ex)
                 {
@@ -78,6 +60,11 @@ namespace Meloht.API.Gateway.ServerProviders
         public IReadOnlyList<ServerNode> GetOriginalServers()
         {
             return _serversOriginalList;
+        }
+
+        public int GetServerWeightSum()
+        {
+            return _weightSum;
         }
     }
 }

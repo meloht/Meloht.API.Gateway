@@ -28,7 +28,7 @@ namespace Meloht.API.Gateway.HostServices
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("DatabaseAutoUpdate running at: {time}", DateTimeOffset.Now);
-                await _serverProvider.DataReadAsync(stoppingToken, _parallelOptions);
+                await _serverProvider.DataReadAsync(_parallelOptions, stoppingToken);
                 await Task.Delay(TimeSpan.FromSeconds(_autoUpdateIntervalSeconds), stoppingToken);
             }
         }

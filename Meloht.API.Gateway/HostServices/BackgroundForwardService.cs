@@ -46,7 +46,7 @@ namespace Meloht.API.Gateway.HostServices
             {
                 throw new Exception("No target servers available.");
             }
-            var targetServer = _loadBalancingPolicy.PickDestination(servers);
+            var targetServer = _loadBalancingPolicy.PickDestination(servers, _serverProvider.GetServerWeightSum());
             if (targetServer == null)
             {
                 throw new Exception("Failed to select target server.");

@@ -17,7 +17,7 @@ namespace Meloht.API.Gateway.LoadBalancing
 
         public string Name => LoadBalancingPolicies.Random;
 
-        public ServerNode? PickDestination(IReadOnlyList<ServerNode> serverNodes)
+        public ServerNode? PickDestination(IReadOnlyList<ServerNode> serverNodes, int weightSum)
         {
             if (serverNodes.Count == 0)
             {

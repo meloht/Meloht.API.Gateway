@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Meloht.API.Gateway.ServerProviders
 {
-    public abstract class DatabaseReadServerData
+    public abstract class DatabaseReadServerData : ServerBase
     {
         private readonly ILogger<DatabaseReadServerData> _logger;
         private readonly string _connectionString;
@@ -18,26 +18,16 @@ namespace Meloht.API.Gateway.ServerProviders
         protected abstract DbConnection GetDbConnection(string connectionString);
         protected abstract DbCommand GetDbCommand(string sql, DbConnection connection);
 
-        private readonly Dictionary<string, ServerNode> _serversDict;
-        private readonly List<ServerNode> _serversOriginalList;
-        private readonly List<ServerNode> _serversHealthList;
-        private readonly HealthCheckServer? _healthCheckServer;
-
-
-        private readonly object _lock = new();
         private const int _databaseTimeoutSeconds = 2;
 
-        public DatabaseReadServerData(IConfiguration config, ILogger<DatabaseReadServerData> logger, IServiceProvider provider)
+        public DatabaseReadServerData(IConfiguration config, ILogger<DatabaseReadServerData> logger, IServiceProvider provider) : base(provider)
         {
             _logger = logger;
             _connectionString = AppSettings.GetConnectionString(config);
-            _serversDict = new Dictionary<string, ServerNode>();
-            _serversOriginalList = new List<ServerNode>();
-            _serversHealthList = new List<ServerNode>();
-            _healthCheckServer = provider.GetService<HealthCheckServer>();
         }
 
-        public async Task DataReadAsync(CancellationToken cancellationToken, ParallelOptions parallelOptions)
+
+        public async Task DataReadAsync(ParallelOptions parallelOptions, CancellationToken cancellationToken)
         {
             try
             {
@@ -66,27 +56,19 @@ namespace Meloht.API.Gateway.ServerProviders
                         Id = id,
                         UniqueName = name,
                         Address = address,
-                        Weight = weight <= 0 ? 1 : weight
+                        Weight = GetWeight(weight),
                     });
                 }
+                await conn.CloseAsync();
                 List<ServerNode> serverNodes = AppUtils.UpdateData(servers, _serversDict);
-                lock (_lock)
-                {
-                    _serversOriginalList.Clear();
-                    _serversOriginalList.AddRange(serverNodes);
-                }
 
+                UpdateOriginalList(serverNodes);
                 if (_healthCheckServer != null)
                 {
                     await _healthCheckServer.CheckServerHealthAsync(parallelOptions, serverNodes);
                 }
-
-                lock (_lock)
-                {
-                    _serversHealthList.Clear();
-                    _serversHealthList.AddRange(serverNodes.Where(p => p.Health == ServerHealth.Healthy));
-                }
-
+                UpdateHealthlList(serverNodes);
+               
             }
             catch (Exception ex)
             {
@@ -103,6 +85,11 @@ namespace Meloht.API.Gateway.ServerProviders
         public List<ServerNode> GetAllServers()
         {
             return _serversOriginalList;
+        }
+
+        public int GetServerWeightSum()
+        {
+            return _weightSum;
         }
     }
 }

@@ -7,10 +7,10 @@ namespace Meloht.API.Gateway
 {
     public interface IServerProvider
     {
-
         IReadOnlyList<ServerNode> GetHealthServers();
 
         IReadOnlyList<ServerNode> GetOriginalServers();
 
+        int GetServerWeightSum();
     }
 }

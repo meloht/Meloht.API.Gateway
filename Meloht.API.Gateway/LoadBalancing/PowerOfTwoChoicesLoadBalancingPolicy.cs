@@ -17,7 +17,7 @@ namespace Meloht.API.Gateway.LoadBalancing
 
         public string Name => LoadBalancingPolicies.PowerOfTwoChoices;
 
-        public ServerNode? PickDestination(IReadOnlyList<ServerNode> serverNodes)
+        public ServerNode? PickDestination(IReadOnlyList<ServerNode> serverNodes, int weightSum)
         {
             var destinationCount = serverNodes.Count;
             if (destinationCount == 0)
