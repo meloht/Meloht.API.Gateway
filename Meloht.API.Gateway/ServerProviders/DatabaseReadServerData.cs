@@ -66,7 +66,7 @@ namespace Meloht.API.Gateway.ServerProviders
                         Id = id,
                         UniqueName = name,
                         Address = address,
-                        Weight = weight
+                        Weight = weight <= 0 ? 1 : weight
                     });
                 }
                 List<ServerNode> serverNodes = AppUtils.UpdateData(servers, _serversDict);
