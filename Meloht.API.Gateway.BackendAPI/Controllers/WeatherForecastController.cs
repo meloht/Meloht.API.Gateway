@@ -28,7 +28,7 @@ namespace Meloht.API.Gateway.BackendAPI.Controllers
         /// QueryString
         /// </summary>
         /// <returns></returns>
-        [HttpGet(Name = "GetWeatherForecast")]
+        [HttpGet("query")]
         public IActionResult Test()
         {
             string? id = Request.Query["id"];
@@ -78,7 +78,7 @@ namespace Meloht.API.Gateway.BackendAPI.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                return BadRequest("文件为空");
+                return BadRequest("file is empty");
             }
             var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
 

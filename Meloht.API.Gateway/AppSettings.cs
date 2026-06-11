@@ -15,6 +15,7 @@ namespace Meloht.API.Gateway
         private const string LoadBalancingPolicy = "Gateway:LoadBalancingPolicy";
         private const string ConnectionString = "Gateway:ConnectionString";
         private const string HealthCheckEnable = "Gateway:HealthCheckEnable";
+        public const string TargetServersKey = "Gateway:TargetServers";
 
         public const string GatewayClient = "GatewayClient";
 

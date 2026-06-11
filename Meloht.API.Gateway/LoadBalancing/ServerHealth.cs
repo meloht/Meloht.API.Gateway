@@ -6,8 +6,6 @@ namespace Meloht.API.Gateway.LoadBalancing
 {
     public enum ServerHealth
     {
-        Unknown,
-
         Healthy,
 
         Unhealthy,

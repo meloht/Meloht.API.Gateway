@@ -14,7 +14,7 @@ namespace Meloht.API.Gateway.ServerProviders
         internal readonly HealthCheckServer? _healthCheckServer;
         internal readonly ServerCluster _serverCluster;
         protected int _weightSum;
-
+        protected readonly bool _healthCheckEnable;
         protected readonly object _lock = new();
 
         public ServerBase(IServiceProvider provider)
@@ -24,6 +24,7 @@ namespace Meloht.API.Gateway.ServerProviders
             _serversHealthList = new List<ServerNode>();
             _serverCluster = new ServerCluster();
             _healthCheckServer = provider.GetService<HealthCheckServer>();
+            _healthCheckEnable = _healthCheckServer != null;
         }
 
         protected void UpdateOriginalList(List<ServerNode> serverNodes)

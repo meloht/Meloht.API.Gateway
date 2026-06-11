@@ -13,11 +13,11 @@ namespace Meloht.API.Gateway.ServerProviders
 {
     public sealed class ServerProviderJson : ServerBase, IServerProvider
     {
-        private readonly IOptionsMonitor<ServerNodeOptions> _options;
+        private readonly IOptionsMonitor<List<ServerNodeConfig>> _options;
         private readonly ILogger<ServerProviderJson> _log;
         private readonly ParallelOptions _parallelOptions;
 
-        public ServerProviderJson(IOptionsMonitor<ServerNodeOptions> options, IServiceProvider provider, ILogger<ServerProviderJson> logger) : base(provider)
+        public ServerProviderJson(IOptionsMonitor<List<ServerNodeConfig>> options, IServiceProvider provider, ILogger<ServerProviderJson> logger) : base(provider)
         {
             _options = options;
             _log = logger;
@@ -26,13 +26,13 @@ namespace Meloht.API.Gateway.ServerProviders
             OnConfigChanged(_options.CurrentValue);
         }
 
-        private void OnConfigChanged(ServerNodeOptions options)
+        private void OnConfigChanged(List<ServerNodeConfig> options)
         {
-            if (options.Servers != null && options.Servers.Count > 0)
+            if (options != null && options.Count > 0)
             {
                 try
                 {
-                    List<ServerNode> serverNodes = AppUtils.UpdateData(options.Servers, _serversDict);
+                    List<ServerNode> serverNodes = AppUtils.UpdateData(options, _serversDict);
 
                     UpdateOriginalList(serverNodes);
 
