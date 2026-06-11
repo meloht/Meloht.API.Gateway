@@ -14,20 +14,24 @@ namespace Meloht.API.Gateway.LoadBalancing
 
         private readonly AtomicCounter _counters = new();
 
-        public ServerNode? PickDestination(IReadOnlyList<ServerNode> serverNodes, int weightSum)
+        public ServerNode? PickDestination(ServerCluster cluster)
         {
-            if (serverNodes.Count == 0)
+            if (cluster == null || cluster.Servers.Length == 0)
+            {
+                return null;
+            }
+            var serverNodes = cluster.Servers;
+            if (serverNodes.Length == 0)
             {
                 return null;
             }
 
-            int[] weights = new int[serverNodes.Count];
             var offset = _counters.Increment() - 1;
 
             // Preventing negative indices from being computed by masking off sign.
             // Ordering of index selection is consistent across all offsets.
             // There may be a discontinuity when the sign of offset changes.
-            return serverNodes[(offset & 0x7FFFFFFF) % serverNodes.Count];
+            return serverNodes[(offset & 0x7FFFFFFF) % serverNodes.Length];
         }
     }
 }

@@ -28,9 +28,10 @@ namespace Meloht.API.Gateway.ServerProviders
             return _data.GetAllServers();
         }
 
-        public int GetServerWeightSum()
+
+        public ServerCluster GetCluster()
         {
-            return _data.GetServerWeightSum();
+            return _data._serverCluster;
         }
     }
 }

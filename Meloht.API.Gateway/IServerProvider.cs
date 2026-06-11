@@ -11,6 +11,6 @@ namespace Meloht.API.Gateway
 
         IReadOnlyList<ServerNode> GetOriginalServers();
 
-        int GetServerWeightSum();
+        ServerCluster GetCluster();
     }
 }

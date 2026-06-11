@@ -12,15 +12,15 @@ namespace Meloht.API.Gateway.LoadBalancing
     {
         public string Name => LoadBalancingPolicies.FirstAlphabetical;
 
-        public ServerNode? PickDestination(IReadOnlyList<ServerNode> serverNodes, int weightSum)
+        public ServerNode? PickDestination(ServerCluster cluster)
         {
-            if (serverNodes.Count == 0)
+            if (cluster == null || cluster.Servers.Length == 0)
             {
                 return null;
             }
-
+            var serverNodes = cluster.Servers;
             var selectedDestination = serverNodes[0];
-            for (var i = 1; i < serverNodes.Count; i++)
+            for (var i = 1; i < serverNodes.Length; i++)
             {
                 var destination = serverNodes[i];
                 if (string.Compare(selectedDestination.UniqueName, destination.UniqueName, StringComparison.OrdinalIgnoreCase) > 0)

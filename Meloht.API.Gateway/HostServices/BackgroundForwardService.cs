@@ -41,12 +41,12 @@ namespace Meloht.API.Gateway.HostServices
         }
         private string GetTargetServer()
         {
-            var servers = _serverProvider.GetHealthServers();
-            if (servers == null || servers.Count == 0)
+            var servers = _serverProvider.GetCluster();
+            if (servers == null || servers.Servers.Length == 0)
             {
                 throw new Exception("No target servers available.");
             }
-            var targetServer = _loadBalancingPolicy.PickDestination(servers, _serverProvider.GetServerWeightSum());
+            var targetServer = _loadBalancingPolicy.PickDestination(_serverProvider.GetCluster());
             if (targetServer == null)
             {
                 throw new Exception("Failed to select target server.");

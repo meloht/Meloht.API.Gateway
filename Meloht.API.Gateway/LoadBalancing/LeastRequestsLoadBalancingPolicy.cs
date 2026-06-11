@@ -9,14 +9,15 @@ namespace Meloht.API.Gateway.LoadBalancing
     {
         public string Name => LoadBalancingPolicies.LeastRequests;
 
-        public ServerNode? PickDestination(IReadOnlyList<ServerNode> serverNodes, int weightSum)
+        public ServerNode? PickDestination(ServerCluster cluster)
         {
-            if (serverNodes.Count == 0)
+            if (cluster == null || cluster.Servers.Length == 0)
             {
                 return null;
             }
+            var serverNodes = cluster.Servers;
 
-            var destinationCount = serverNodes.Count;
+            var destinationCount = serverNodes.Length;
             var leastRequestsDestination = serverNodes[0];
             var leastRequestsCount = leastRequestsDestination.ConcurrentRequestCount;
             for (var i = 1; i < destinationCount; i++)

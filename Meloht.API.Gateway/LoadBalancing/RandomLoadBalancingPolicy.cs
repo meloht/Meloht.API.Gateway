@@ -2,6 +2,7 @@
 using Meloht.API.Gateway.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Text;
 
 namespace Meloht.API.Gateway.LoadBalancing
@@ -17,15 +18,20 @@ namespace Meloht.API.Gateway.LoadBalancing
 
         public string Name => LoadBalancingPolicies.Random;
 
-        public ServerNode? PickDestination(IReadOnlyList<ServerNode> serverNodes, int weightSum)
+        public ServerNode? PickDestination(ServerCluster cluster)
         {
-            if (serverNodes.Count == 0)
+            if (cluster == null || cluster.Servers.Length == 0)
             {
                 return null;
             }
-            int[] weightIndex=new int[weightSum];
+            var serverNodes = cluster.Servers;
+            if (serverNodes.Length == 0)
+            {
+                return null;
+            }
+
             var random = _randomFactory.CreateRandomInstance();
-            return serverNodes[random.Next(serverNodes.Count)];
+            return serverNodes[random.Next(serverNodes.Length)];
         }
     }
 }
