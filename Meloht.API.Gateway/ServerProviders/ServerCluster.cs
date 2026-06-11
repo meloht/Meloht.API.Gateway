@@ -8,7 +8,7 @@ namespace Meloht.API.Gateway.ServerProviders
     {
         public int WeightSum { get; set; }
         public ServerNode[] Servers { get; set; } = [];
-        public int[] WeightIndex { get; set; } = [];
+        public int[] WeightIndexArr { get; set; } = [];
 
     }
 }

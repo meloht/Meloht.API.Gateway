@@ -89,8 +89,16 @@ namespace Meloht.API.Gateway.Utilities
         }
 
         public static int GetWeight(int weight)
-        {
-            return weight <= 0 ? 1 : weight;
+        {   
+            if(weight <= 0)
+            {
+                return 1;
+            }
+            if (weight > 100)
+            {
+                return 100;
+            }
+            return weight;
         }
     }
 }

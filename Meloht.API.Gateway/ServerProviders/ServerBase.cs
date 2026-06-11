@@ -45,11 +45,20 @@ namespace Meloht.API.Gateway.ServerProviders
 
                 _serverCluster.WeightSum = _weightSum;
                 _serverCluster.Servers = _serversHealthList.ToArray();
-                _serverCluster.WeightIndex = new int[_weightSum];
+                _serverCluster.WeightIndexArr = new int[_weightSum];
+                for (int i = 0, j = 0; i < _serverCluster.Servers.Length; i++)
+                {
+                    var item = _serverCluster.Servers[i];
+                    for (int k = 0; k < item.Weight; k++)
+                    {
+                        _serverCluster.WeightIndexArr[j++] = i;
+                    }
+
+                }
             }
         }
 
-      
+
 
 
     }
