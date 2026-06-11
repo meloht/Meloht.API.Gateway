@@ -16,34 +16,43 @@ namespace Meloht.API.Gateway.LoadBalancing
         private const string _testEndpoint = "/health";
         private readonly ParallelOptions _parallelOptions;
         private const int _healthCheckIntervalSeconds = 30;
+        private const int _healthCheckTimeoutSeconds = 2;
+
         public HealthCheckServer(IServerProvider serverProvider, IHttpClientFactory httpClientFactory, ILogger<HealthCheckServer> logger)
         {
             _serverProvider = serverProvider;
             _httpClient = httpClientFactory.CreateClient(AppSettings.GatewayClient);
             _logger = logger;
-            _parallelOptions = new ParallelOptions() {  MaxDegreeOfParallelism = Environment.ProcessorCount };
+            _parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount };
         }
 
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _parallelOptions.CancellationToken = stoppingToken;
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await CheckHealthAsync(stoppingToken);
+                await CheckHealthAsync(_parallelOptions);
                 await Task.Delay(TimeSpan.FromSeconds(_healthCheckIntervalSeconds), stoppingToken);
             }
         }
 
-        public async Task CheckHealthAsync(CancellationToken token)
+        private async Task CheckHealthAsync(ParallelOptions parallelOptions)
         {
             var servers = _serverProvider.GetServers();
 
-            await Parallel.ForEachAsync(servers, _parallelOptions, async (server, ct) =>
-            {
-                await CheckServerHealth(server, ct);
-            });
+            await CheckServerHealthAsync(_parallelOptions, servers);
+        }
 
+        public async Task CheckServerHealthAsync(ParallelOptions parallelOptions, IReadOnlyList<ServerNode> servers)
+        {
+            await Parallel.ForEachAsync(servers, parallelOptions, async (server, ct) =>
+            {
+                using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                cts.CancelAfter(TimeSpan.FromSeconds(_healthCheckTimeoutSeconds));
+                await CheckServerHealth(server, cts.Token);
+            });
         }
 
         private async Task CheckServerHealth(ServerNode server, CancellationToken cancellationToken)
