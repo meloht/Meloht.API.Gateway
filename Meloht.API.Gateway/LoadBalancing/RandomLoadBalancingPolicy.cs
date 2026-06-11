@@ -24,14 +24,14 @@ namespace Meloht.API.Gateway.LoadBalancing
             {
                 return null;
             }
-            var serverNodes = cluster.Servers;
-            if (serverNodes.Length == 0)
+
+            if (cluster.Servers.Length == 0)
             {
                 return null;
             }
-
             var random = _randomFactory.CreateRandomInstance();
-            return serverNodes[random.Next(serverNodes.Length)];
+            int idx= cluster.WeightIndexArr[random.Next(cluster.WeightIndexArr.Length)];
+            return cluster.Servers[idx];
         }
     }
 }

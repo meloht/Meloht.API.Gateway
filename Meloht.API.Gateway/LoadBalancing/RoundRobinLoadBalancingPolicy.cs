@@ -27,11 +27,12 @@ namespace Meloht.API.Gateway.LoadBalancing
             }
 
             var offset = _counters.Increment() - 1;
-
             // Preventing negative indices from being computed by masking off sign.
             // Ordering of index selection is consistent across all offsets.
             // There may be a discontinuity when the sign of offset changes.
-            return serverNodes[(offset & 0x7FFFFFFF) % serverNodes.Length];
+            var weightIdx = (offset & 0x7FFFFFFF) % cluster.WeightIndexArr.Length;
+            var idx = cluster.WeightIndexArr[weightIdx];
+            return serverNodes[idx];
         }
     }
 }
