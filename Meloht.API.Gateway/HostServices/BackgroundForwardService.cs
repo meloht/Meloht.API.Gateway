@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -77,29 +78,22 @@ namespace Meloht.API.Gateway.HostServices
         }
         private static string GetTargetUri(HttpContext context, string targetServer)
         {
-            string http = "http";
-
+            StringBuilder urlBuilder = new StringBuilder();
+            urlBuilder.Append("http");
+  
             if (context.Request.IsHttps)
             {
-                http = "https";
+                urlBuilder.Append('s');
             }
 
-            string url = $"{http}://{targetServer}{context.Request.Path}";
+            urlBuilder.Append("://").Append(targetServer).Append(context.Request.Path);
+
             if (context.Request.Query != null && context.Request.Query.Count > 0)
             {
-                List<string> paras = new List<string>();
-                foreach (var item in context.Request.Query)
-                {
-                    if (item.Value.Count > 0)
-                    {
-                        paras.Add($"{item.Key}={item.Value[0]}");
-                    }
-
-                }
-                url = $"{url}?{string.Join("&", paras)}";
+                urlBuilder.Append(context.Request.QueryString.Value);
             }
 
-            return url;
+            return urlBuilder.ToString();
         }
         private static HttpRequestMessage CreateProxyHttpRequest(HttpContext context, string targetUri)
         {
@@ -114,7 +108,6 @@ namespace Meloht.API.Gateway.HostServices
             if (context.Request.ContentLength > 0 || context.Request.Headers.ContainsKey("Transfer-Encoding"))
             {
                 requestMessage.Content = new StreamContent(context.Request.Body);
-
             }
 
 
