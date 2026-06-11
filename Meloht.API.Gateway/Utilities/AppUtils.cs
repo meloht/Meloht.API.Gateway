@@ -52,7 +52,7 @@ namespace Meloht.API.Gateway.Utilities
 
                 if (serversDict.TryGetValue(item.Address, out var node))
                 {
-                    node.Weight = item.Weight <= 0 ? 1 : item.Weight;
+                    node.Weight = GetWeight(item.Weight);
                     node.UniqueName = item.UniqueName;
                     node.Address = item.Address;
                     node.Id = item.Id;
@@ -65,7 +65,7 @@ namespace Meloht.API.Gateway.Utilities
                         Id = item.Id,
                         UniqueName = item.UniqueName,
                         Address = item.Address,
-                        Weight = item.Weight <= 0 ? 1 : item.Weight
+                        Weight = GetWeight(item.Weight)
                     };
                     serversList.Add(nodeNew);
                     serversDict.Add(item.Address, nodeNew);
@@ -86,6 +86,11 @@ namespace Meloht.API.Gateway.Utilities
             }
 
             return serversList;
+        }
+
+        public static int GetWeight(int weight)
+        {
+            return weight <= 0 ? 1 : weight;
         }
     }
 }

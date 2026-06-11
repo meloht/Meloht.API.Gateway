@@ -56,7 +56,7 @@ namespace Meloht.API.Gateway.ServerProviders
                         Id = id,
                         UniqueName = name,
                         Address = address,
-                        Weight = GetWeight(weight),
+                        Weight = AppUtils.GetWeight(weight),
                     });
                 }
                 await conn.CloseAsync();

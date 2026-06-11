@@ -43,9 +43,6 @@ namespace Meloht.API.Gateway.ServerProviders
             }
         }
 
-        protected static int GetWeight(int weight) 
-        {
-            return weight <= 0 ? 1 : weight;
-        }
+       
     }
 }

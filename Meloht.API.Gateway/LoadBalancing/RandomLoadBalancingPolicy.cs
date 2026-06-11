@@ -23,7 +23,7 @@ namespace Meloht.API.Gateway.LoadBalancing
             {
                 return null;
             }
-
+            int[] weightIndex=new int[weightSum];
             var random = _randomFactory.CreateRandomInstance();
             return serverNodes[random.Next(serverNodes.Count)];
         }
