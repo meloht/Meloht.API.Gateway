@@ -13,9 +13,10 @@ namespace Meloht.API.Gateway
         private const string HttpRequestTimeout = "Gateway:HttpRequestTimeout";
         private const string PoolSize = "Gateway:PoolSize";
         private const string LoadBalancingPolicy = "Gateway:LoadBalancingPolicy";
-        public const string GatewayClient = "GatewayClient";
         private const string ConnectionString = "Gateway:ConnectionString";
         private const string HealthCheckEnable = "Gateway:HealthCheckEnable";
+
+        public const string GatewayClient = "GatewayClient";
 
         public static string GetLoadBalancingPolicy(IConfiguration configuration)
         {

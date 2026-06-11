@@ -8,10 +8,12 @@ using System.Text;
 
 namespace Meloht.API.Gateway.PostgreSQL
 {
-    public class ServerDataSourcePostgreSQL: ServerProviderDatabase
+    public class ServerDataSourcePostgreSQL: DatabaseAutoUpdate
     {
         public ServerDataSourcePostgreSQL(IConfiguration config, ILogger<ServerProviderDatabase> logger) : base(config, logger)
         {
+          
+           
         }
         protected override DbConnection GetDbConnection(string connectionString)
         {

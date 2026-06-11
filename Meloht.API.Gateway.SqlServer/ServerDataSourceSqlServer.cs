@@ -6,7 +6,7 @@ using System.Data.Common;
 
 namespace Meloht.API.Gateway.SqlServer
 {
-    public class ServerDataSourceSqlServer : ServerProviderDatabase
+    public class ServerDataSourceSqlServer : DatabaseAutoUpdate
     {
         public ServerDataSourceSqlServer(IConfiguration config, ILogger<ServerProviderDatabase> logger) : base(config, logger)
         {

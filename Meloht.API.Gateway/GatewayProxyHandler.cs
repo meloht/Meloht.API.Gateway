@@ -32,8 +32,8 @@ namespace Meloht.API.Gateway
         {
             _targetRequstQueue = new ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>>();
 
-            _requestTimeout = configuration.GetValue<int>(AppSettings.HttpRequestTimeout) * 1000;
-            _poolSize = configuration.GetValue<int>(AppSettings.PoolSize);
+            _requestTimeout = AppSettings.GetHttpRequestTimeout(configuration) * 1000;
+            _poolSize = AppSettings.GetPoolSize(configuration);
 
             _logger = logger;
 

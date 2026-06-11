@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Meloht.API.Gateway.ServerProviders;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Meloht.API.Gateway.MySql
@@ -7,7 +8,9 @@ namespace Meloht.API.Gateway.MySql
     {
         public static void AddServerProviderMySql(this IServiceCollection services)
         {
-            services.AddSingleton<IServerProvider, ServerDataSourceMySql>();
+            services.AddHostedService<ServerDataSourceMySql>();
+            services.AddSingleton<IServerProvider, ServerProviderDatabase>();
+           
         }
     }
 }
