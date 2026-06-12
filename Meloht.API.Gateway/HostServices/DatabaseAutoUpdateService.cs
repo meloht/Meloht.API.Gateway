@@ -1,4 +1,5 @@
 ﻿using Meloht.API.Gateway.ServerProviders;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,13 +14,14 @@ namespace Meloht.API.Gateway.HostServices
         private readonly DatabaseReadServerData _serverProvider;
         private readonly ParallelOptions _parallelOptions;
 
-        private const int _autoUpdateIntervalSeconds = 120;
+        private readonly int _autoUpdateIntervalSeconds;
 
-        public DatabaseAutoUpdateService(ILogger<DatabaseAutoUpdateService> logger, DatabaseReadServerData serverProvider)
+        public DatabaseAutoUpdateService(ILogger<DatabaseAutoUpdateService> logger, DatabaseReadServerData serverProvider, IConfiguration config)
         {
             _logger = logger;
             _serverProvider = serverProvider;
             _parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount };
+            _autoUpdateIntervalSeconds = AppSettings.GetDatabaseAutoUpdateIntervalSeconds(config);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

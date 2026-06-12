@@ -11,7 +11,7 @@ namespace Meloht.API.Gateway.MySql
 {
     public class ServerDataSourceMySql : DatabaseReadServerData
     {
-        public ServerDataSourceMySql(IConfiguration config, ILogger<DatabaseReadServerData> logger, IServiceProvider serviceProvider) : base(config, logger, serviceProvider)
+        public ServerDataSourceMySql(IConfiguration config, ILogger<DatabaseReadServerData> logger, HealthCheckServer checkServer) : base(config, logger, checkServer)
         {
         }
 

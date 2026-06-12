@@ -14,4 +14,8 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Meloht.API.Gateway.Common\Meloht.API.Gateway.Common.csproj" />
+  </ItemGroup>
+
 </Project>

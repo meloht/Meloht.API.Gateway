@@ -18,12 +18,13 @@ namespace Meloht.API.Gateway.ServerProviders
         protected abstract DbConnection GetDbConnection(string connectionString);
         protected abstract DbCommand GetDbCommand(string sql, DbConnection connection);
 
-        private const int _databaseTimeoutSeconds = 5;
+        private readonly int _databaseTimeoutSeconds;
 
-        public DatabaseReadServerData(IConfiguration config, ILogger<DatabaseReadServerData> logger, IServiceProvider provider) : base(provider)
+        public DatabaseReadServerData(IConfiguration config, ILogger<DatabaseReadServerData> logger, HealthCheckServer healthCheck) : base(healthCheck)
         {
             _logger = logger;
             _connectionString = AppSettings.GetConnectionString(config);
+            _databaseTimeoutSeconds = AppSettings.GetDatabaseTimeoutSeconds(config);
         }
 
 
@@ -63,12 +64,9 @@ namespace Meloht.API.Gateway.ServerProviders
                 List<ServerNode> serverNodes = AppUtils.UpdateData(servers, _serversDict);
 
                 UpdateOriginalList(serverNodes);
-                if (_healthCheckServer != null)
-                {
-                    await _healthCheckServer.CheckServerHealthAsync(parallelOptions, serverNodes);
-                }
+                await _healthCheckServer.CheckServerHealthAsync(parallelOptions, serverNodes);
                 UpdateHealthlList(serverNodes);
-               
+
             }
             catch (Exception ex)
             {

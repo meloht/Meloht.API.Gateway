@@ -17,7 +17,7 @@ namespace Meloht.API.Gateway.ServerProviders
         private readonly ILogger<ServerProviderJson> _log;
         private readonly ParallelOptions _parallelOptions;
 
-        public ServerProviderJson(IOptionsMonitor<List<ServerNodeConfig>> options, IServiceProvider provider, ILogger<ServerProviderJson> logger) : base(provider)
+        public ServerProviderJson(IOptionsMonitor<List<ServerNodeConfig>> options, HealthCheckServer checkServer, ILogger<ServerProviderJson> logger) : base(checkServer)
         {
             _options = options;
             _log = logger;
@@ -36,11 +36,8 @@ namespace Meloht.API.Gateway.ServerProviders
 
                     UpdateOriginalList(serverNodes);
 
-                    if (_healthCheckServer != null)
-                    {
-                        var task = _healthCheckServer.CheckServerHealthAsync(_parallelOptions, serverNodes);
-                        Task.WaitAll(task);
-                    }
+                    var task = _healthCheckServer.CheckServerHealthAsync(_parallelOptions, serverNodes);
+                    Task.WaitAll(task);
 
                     UpdateHealthlList(serverNodes);
                 }

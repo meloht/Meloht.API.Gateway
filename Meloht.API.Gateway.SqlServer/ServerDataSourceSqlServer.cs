@@ -8,7 +8,7 @@ namespace Meloht.API.Gateway.SqlServer
 {
     public class ServerDataSourceSqlServer : DatabaseReadServerData
     {
-        public ServerDataSourceSqlServer(IConfiguration config, ILogger<DatabaseReadServerData> logger, IServiceProvider serviceProvider) : base(config, logger, serviceProvider)
+        public ServerDataSourceSqlServer(IConfiguration config, ILogger<DatabaseReadServerData> logger, HealthCheckServer checkServer) : base(config, logger, checkServer)
         {
         }
 

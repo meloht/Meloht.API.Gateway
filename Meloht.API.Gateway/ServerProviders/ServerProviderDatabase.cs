@@ -33,5 +33,10 @@ namespace Meloht.API.Gateway.ServerProviders
         {
             return _data._serverCluster;
         }
+
+        public void UpdateHealthListByHealthService()
+        {
+            _data.UpdateHealthListByHealthService();
+        }
     }
 }

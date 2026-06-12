@@ -1,4 +1,5 @@
 ﻿using Meloht.API.Gateway.ServerProviders;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,12 +15,13 @@ namespace Meloht.API.Gateway.HostServices
         private readonly HealthCheckServer _healthCheckServer;
 
         private readonly ParallelOptions _parallelOptions;
-        private const int _healthCheckIntervalSeconds = 10;
-        public ServerHealthCheckService(IServerProvider serverProvider, HealthCheckServer healthCheckServer, ILogger<ServerHealthCheckService> logger)
+        private readonly int _healthCheckIntervalSeconds;
+        public ServerHealthCheckService(IServerProvider serverProvider, HealthCheckServer healthCheckServer, ILogger<ServerHealthCheckService> logger, IConfiguration configuration)
         {
             _serverProvider = serverProvider;
             _healthCheckServer = healthCheckServer;
             _logger = logger;
+            _healthCheckIntervalSeconds = AppSettings.GetHealthIntervalSeconds(configuration);
             _parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount };
         }
 

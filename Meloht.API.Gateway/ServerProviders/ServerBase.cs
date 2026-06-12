@@ -11,20 +11,19 @@ namespace Meloht.API.Gateway.ServerProviders
         protected readonly Dictionary<string, ServerNode> _serversDict;
         protected readonly List<ServerNode> _serversOriginalList;
         protected readonly List<ServerNode> _serversHealthList;
-        internal readonly HealthCheckServer? _healthCheckServer;
+        internal readonly HealthCheckServer _healthCheckServer;
         internal readonly ServerCluster _serverCluster;
         protected int _weightSum;
-        protected readonly bool _healthCheckEnable;
         protected readonly object _lock = new();
 
-        public ServerBase(IServiceProvider provider)
+        public ServerBase(HealthCheckServer healthCheckServer)
         {
             _serversDict = new Dictionary<string, ServerNode>();
             _serversOriginalList = new List<ServerNode>();
             _serversHealthList = new List<ServerNode>();
             _serverCluster = new ServerCluster();
-            _healthCheckServer = provider.GetService<HealthCheckServer>();
-            _healthCheckEnable = _healthCheckServer != null;
+            _healthCheckServer = healthCheckServer;
+
         }
 
         protected void UpdateOriginalList(List<ServerNode> serverNodes)

@@ -20,9 +20,6 @@ namespace Meloht.API.Gateway
             services.AddSingleton<IRandomFactory, RandomFactory>();
             services.AddHttpClient(AppSettings.GatewayClient);
            
-
-          
-
             AddLoadBalancingPolicy(services, configuration);
 
             services.AddSingleton<IGatewayProxy, GatewayProxyHandler>();
@@ -45,12 +42,8 @@ namespace Meloht.API.Gateway
 
         private static void AddHealthCheck(IServiceCollection services, IConfiguration configuration)
         {
-            bool bl = AppSettings.GetHealthCheckEnable(configuration);
-            if (bl)
-            {
-                services.AddSingleton<HealthCheckServer>();
-                services.AddHostedService<ServerHealthCheckService>();
-            }
+            services.AddSingleton<HealthCheckServer>();
+            services.AddHostedService<ServerHealthCheckService>();
         }
         private static void AddLoadBalancingPolicy(IServiceCollection services, IConfiguration configuration)
         {

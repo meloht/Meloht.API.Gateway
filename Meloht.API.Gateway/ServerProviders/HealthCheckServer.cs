@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -7,17 +8,18 @@ using System.Text;
 
 namespace Meloht.API.Gateway.ServerProviders
 {
-    internal class HealthCheckServer 
+    public class HealthCheckServer 
     {
         private readonly ILogger<HealthCheckServer> _logger;
         private readonly HttpClient _httpClient;
         private const string _testEndpoint = "/health/live";
-        private const int _healthCheckTimeoutSeconds = 5;
+        private readonly int _healthCheckTimeoutSeconds;
 
-        public HealthCheckServer(IHttpClientFactory httpClientFactory, ILogger<HealthCheckServer> logger)
+        public HealthCheckServer(IHttpClientFactory httpClientFactory, ILogger<HealthCheckServer> logger, IConfiguration configuration)
         {
             _httpClient = httpClientFactory.CreateClient(AppSettings.GatewayClient);
             _logger = logger;
+            _healthCheckTimeoutSeconds = AppSettings.GetHealthRequestTimeoutSeconds(configuration);
         }
 
 

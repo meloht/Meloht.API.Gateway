@@ -10,7 +10,7 @@ namespace Meloht.API.Gateway.PostgreSQL
 {
     public class ServerDataSourcePostgreSQL: DatabaseReadServerData
     {
-        public ServerDataSourcePostgreSQL(IConfiguration config, ILogger<DatabaseReadServerData> logger, IServiceProvider serviceProvider) : base(config, logger, serviceProvider)
+        public ServerDataSourcePostgreSQL(IConfiguration config, ILogger<DatabaseReadServerData> logger, HealthCheckServer checkServer) : base(config, logger, checkServer)
         {
           
            
