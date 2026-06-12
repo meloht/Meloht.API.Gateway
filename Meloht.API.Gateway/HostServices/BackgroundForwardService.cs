@@ -60,7 +60,7 @@ namespace Meloht.API.Gateway.HostServices
             {
                 string url = GetTargetUri(item.Context, GetTargetServer());
                 using var requestMessage = CreateProxyHttpRequest(item.Context, url);
-                var responseMessage = await _httpClient.SendAsync(requestMessage);
+                var responseMessage = await _httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, item.Context.RequestAborted);
 
                 if (_gatewayProxy.TargetRequestQueue.TryRemove(item.Guid, out var tcs))
                 {
