@@ -3,6 +3,7 @@
   <Project Path="Meloht.API.Gateway.Client/Meloht.API.Gateway.Client.csproj" Id="005dc604-3543-4d14-9f93-a5a5ae94324a" />
   <Project Path="Meloht.API.Gateway.MySql/Meloht.API.Gateway.MySql.csproj" Id="7a204b56-210a-40d5-87e1-9a7219a7daec" />
   <Project Path="Meloht.API.Gateway.PostgreSQL/Meloht.API.Gateway.PostgreSQL.csproj" Id="cab80f60-da8c-40ff-907d-8fce2222cb0c" />
+  <Project Path="Meloht.API.Gateway.ServiceDiscovery/Meloht.API.Gateway.ServiceDiscovery.csproj" Id="0d0d1882-151a-4cfe-8a43-81985c4c9065" />
   <Project Path="Meloht.API.Gateway.SqlServer/Meloht.API.Gateway.SqlServer.csproj" Id="81aca5c6-033f-4dcc-8c1a-785e0fe6551f" />
   <Project Path="Meloht.API.Gateway.WebAPI/Meloht.API.Gateway.WebAPI.csproj" />
   <Project Path="Meloht.API.Gateway/Meloht.API.Gateway.csproj" />
