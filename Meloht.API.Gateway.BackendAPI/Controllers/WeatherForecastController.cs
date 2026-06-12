@@ -187,11 +187,11 @@ namespace Meloht.API.Gateway.BackendAPI.Controllers
                 FileAccess.Read,
                 FileShare.Read);
 
-            return File(
-                stream,
-                "application/zip",
-                "bigfile.zip",
-                enableRangeProcessing: true);
+            return File(stream, "application/zip", "bigfile.zip", enableRangeProcessing: true);
+
+
+
+
         }
     }
 }
