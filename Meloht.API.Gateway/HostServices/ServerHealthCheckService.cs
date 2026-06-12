@@ -15,7 +15,7 @@ namespace Meloht.API.Gateway.HostServices
         private readonly HealthCheckServer _healthCheckServer;
 
         private readonly ParallelOptions _parallelOptions;
-        private const int _healthCheckIntervalSeconds = 30;
+        private const int _healthCheckIntervalSeconds = 10;
         public ServerHealthCheckService(IServerProvider serverProvider, HealthCheckServer healthCheckServer, ILogger<ServerHealthCheckService> logger)
         {
             _serverProvider = serverProvider;

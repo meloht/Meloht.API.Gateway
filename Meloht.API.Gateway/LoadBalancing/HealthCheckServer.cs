@@ -12,8 +12,8 @@ namespace Meloht.API.Gateway.LoadBalancing
     {
         private readonly ILogger<HealthCheckServer> _logger;
         private readonly HttpClient _httpClient;
-        private const string _testEndpoint = "/health";
-        private const int _healthCheckTimeoutSeconds = 2;
+        private const string _testEndpoint = "/health/live";
+        private const int _healthCheckTimeoutSeconds = 5;
 
         public HealthCheckServer(IHttpClientFactory httpClientFactory, ILogger<HealthCheckServer> logger)
         {

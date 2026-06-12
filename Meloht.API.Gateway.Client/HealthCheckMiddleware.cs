@@ -18,7 +18,7 @@ namespace Meloht.API.Gateway.Client
         {
             var path = context.Request.Path.Value;
 
-            if (path != null && path.StartsWith("/health/check"))
+            if (path != null && path.StartsWith("/health/live"))
             {
                 context.Response.StatusCode = StatusCodes.Status200OK;
                 context.Response.ContentType = "application/json";

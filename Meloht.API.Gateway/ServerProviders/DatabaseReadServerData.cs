@@ -18,7 +18,7 @@ namespace Meloht.API.Gateway.ServerProviders
         protected abstract DbConnection GetDbConnection(string connectionString);
         protected abstract DbCommand GetDbCommand(string sql, DbConnection connection);
 
-        private const int _databaseTimeoutSeconds = 2;
+        private const int _databaseTimeoutSeconds = 5;
 
         public DatabaseReadServerData(IConfiguration config, ILogger<DatabaseReadServerData> logger, IServiceProvider provider) : base(provider)
         {
