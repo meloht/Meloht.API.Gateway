@@ -40,6 +40,8 @@ namespace Meloht.API.Gateway.HostServices
             var servers = _serverProvider.GetOriginalServers();
 
             await _healthCheckServer.CheckServerHealthAsync(_parallelOptions, servers);
+
+            _serverProvider.UpdateHealthListByHealthService();
         }
     }
 }

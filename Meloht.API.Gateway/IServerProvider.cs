@@ -11,6 +11,7 @@ namespace Meloht.API.Gateway
 
         IReadOnlyList<ServerNode> GetOriginalServers();
 
+        void UpdateHealthListByHealthService();
         ServerCluster GetCluster();
     }
 }

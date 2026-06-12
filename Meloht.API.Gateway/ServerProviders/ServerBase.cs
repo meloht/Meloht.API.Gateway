@@ -1,6 +1,7 @@
 ﻿using Meloht.API.Gateway.LoadBalancing;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -40,26 +41,36 @@ namespace Meloht.API.Gateway.ServerProviders
         {
             lock (_lock)
             {
-                _serversHealthList.Clear();
-                _serversHealthList.AddRange(serverNodes.Where(p => p.Health == ServerHealth.Healthy));
-                _weightSum = _serversHealthList.Sum(p => p.Weight);
+                UpdateHealthlList(serverNodes.Where(p => p.Health == ServerHealth.Healthy));
+            }
+        }
+        private void UpdateHealthlList(IEnumerable<ServerNode> serverNodes)
+        {
+            _serversHealthList.Clear();
+            _serversHealthList.AddRange(serverNodes);
+            _weightSum = _serversHealthList.Sum(p => p.Weight);
 
-                _serverCluster.WeightSum = _weightSum;
-                _serverCluster.Servers = _serversHealthList.ToArray();
-                _serverCluster.WeightIndexArr = new int[_weightSum];
-                for (int i = 0, j = 0; i < _serverCluster.Servers.Length; i++)
+            _serverCluster.WeightSum = _weightSum;
+            _serverCluster.Servers = _serversHealthList.ToArray();
+            _serverCluster.WeightIndexArr = new int[_weightSum];
+            for (int i = 0, j = 0; i < _serverCluster.Servers.Length; i++)
+            {
+                var item = _serverCluster.Servers[i];
+                for (int k = 0; k < item.Weight; k++)
                 {
-                    var item = _serverCluster.Servers[i];
-                    for (int k = 0; k < item.Weight; k++)
-                    {
-                        _serverCluster.WeightIndexArr[j++] = i;
-                    }
-
+                    _serverCluster.WeightIndexArr[j++] = i;
                 }
+
             }
         }
 
-
+        public void UpdateHealthListByHealthService()
+        {
+            lock (_lock)
+            {
+                UpdateHealthlList(_serversOriginalList.Where(p => p.Health == ServerHealth.Healthy));
+            }
+        }
 
 
     }
