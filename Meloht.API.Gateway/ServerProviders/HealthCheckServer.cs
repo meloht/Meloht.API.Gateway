@@ -1,12 +1,11 @@
-﻿using Meloht.API.Gateway.ServerProviders;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Meloht.API.Gateway.LoadBalancing
+namespace Meloht.API.Gateway.ServerProviders
 {
     internal class HealthCheckServer 
     {

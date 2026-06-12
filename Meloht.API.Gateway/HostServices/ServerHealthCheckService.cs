@@ -1,5 +1,4 @@
-﻿using Meloht.API.Gateway.LoadBalancing;
-using Meloht.API.Gateway.ServerProviders;
+﻿using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
