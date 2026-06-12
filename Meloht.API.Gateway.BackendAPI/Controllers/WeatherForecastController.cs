@@ -100,6 +100,31 @@ namespace Meloht.API.Gateway.BackendAPI.Controllers
             });
         }
 
+        [HttpPost("uploadOneBinary")]
+        public async Task<IActionResult> UploadBinary()
+        {
+            string filePath = Path.Combine("uploads", Guid.NewGuid().ToString());
+
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+            await using var fileStream = System.IO.File.Create(filePath);
+
+            await Request.Body.CopyToAsync(fileStream);
+
+            return Ok(new
+            {
+                FilePath = filePath,
+                Size = fileStream.Length
+            });
+        }
+
+
+
         [HttpPost("uploads")]
         public async Task<IActionResult> Uploads(List<IFormFile> files)
         {
@@ -143,17 +168,14 @@ namespace Meloht.API.Gateway.BackendAPI.Controllers
         {
             var filePath = @"D:\code\TestFiles\test.pdf";
 
-            return PhysicalFile(
-                filePath,
-                "application/pdf");
+            return PhysicalFile(filePath, "application/pdf");
+
         }
 
         [HttpGet("preview/image")]
         public IActionResult PreviewImage()
         {
-            return PhysicalFile(
-                @"D:\code\TestFiles\logo.png",
-                "image/png");
+            return PhysicalFile(@"D:\code\TestFiles\logo.png", "image/png");
         }
 
         [HttpGet("download")]
