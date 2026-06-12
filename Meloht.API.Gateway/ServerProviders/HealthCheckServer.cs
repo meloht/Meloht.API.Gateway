@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Meloht.API.Gateway.Common;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -8,15 +9,16 @@ using System.Text;
 
 namespace Meloht.API.Gateway.ServerProviders
 {
-    public class HealthCheckServer 
+    public class HealthCheckServer
     {
         private readonly ILogger<HealthCheckServer> _logger;
         private readonly HttpClient _httpClient;
-        private const string _testEndpoint = "/health/live";
+        private readonly string _healthEndpoint;
         private readonly int _healthCheckTimeoutSeconds;
 
         public HealthCheckServer(IHttpClientFactory httpClientFactory, ILogger<HealthCheckServer> logger, IConfiguration configuration)
         {
+            _healthEndpoint = HealthCheckAPI.HealthCheckPath;
             _httpClient = httpClientFactory.CreateClient(AppSettings.GatewayClient);
             _logger = logger;
             _healthCheckTimeoutSeconds = AppSettings.GetHealthRequestTimeoutSeconds(configuration);
@@ -37,7 +39,7 @@ namespace Meloht.API.Gateway.ServerProviders
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{server.Address}{_testEndpoint}", cancellationToken);
+                var response = await _httpClient.GetAsync($"{server.Address}{_healthEndpoint}", cancellationToken);
                 server.Health = response.IsSuccessStatusCode ? ServerHealth.Healthy : ServerHealth.Unhealthy;
             }
             catch (Exception ex)

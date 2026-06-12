@@ -2,6 +2,7 @@
 using Meloht.API.Gateway.ServerProviders;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace Meloht.API.Gateway.Utilities
@@ -55,7 +56,9 @@ namespace Meloht.API.Gateway.Utilities
                 {
                     node.Weight = GetWeight(item.Weight);
                     node.UniqueName = item.UniqueName;
-                    node.Address = item.Address;
+                    node.Host = item.Host;
+                    node.Port = item.Port;
+                    node.Address = GetAddress(item.Host, item.Port);
                     node.Id = item.Id;
                     serversList.Add(node);
                 }
@@ -65,7 +68,9 @@ namespace Meloht.API.Gateway.Utilities
                     {
                         Id = item.Id,
                         UniqueName = item.UniqueName,
-                        Address = item.Address,
+                        Host = item.Host,
+                        Port = item.Port,
+                        Address = GetAddress(item.Host, item.Port),
                         Weight = GetWeight(item.Weight)
                     };
                     serversList.Add(nodeNew);
@@ -88,10 +93,13 @@ namespace Meloht.API.Gateway.Utilities
 
             return serversList;
         }
-
+        public static string GetAddress(string host, int port)
+        {
+            return $"{host}:{port}";
+        }
         public static int GetWeight(int weight)
-        {   
-            if(weight <= 0)
+        {
+            if (weight <= 0)
             {
                 return 1;
             }

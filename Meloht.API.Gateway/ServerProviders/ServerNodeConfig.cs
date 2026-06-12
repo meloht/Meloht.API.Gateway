@@ -10,7 +10,9 @@ namespace Meloht.API.Gateway.ServerProviders
         public int Id { get; set; }
         public required string UniqueName { get; set; }
 
-        public required string Address { get; set; }
+        public required int Port { get; set; }
+        public required string Host { get; set; }
+        public string Address { get; set; }
 
         public int Weight { get; set; }
     }
