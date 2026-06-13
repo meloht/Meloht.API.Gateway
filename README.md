@@ -11,11 +11,6 @@ Ten thousand concurrent request test
     "RequestQueuePoolSize": 1000,
     "RequestTimeoutSeconds": 120,
     "LoadBalancingPolicy": "RoundRobin",
-    "DatabaseAutoUpdate": {
-      "IntervalSeconds": 120,
-      "DatabaseTimeoutSeconds": 5,
-      "ConnectionString": null
-    },
     "HealthCheck": {
       "IntervalSeconds": 10,
       "RequestTimeoutSeconds": 5
