@@ -39,7 +39,7 @@ namespace Meloht.API.Gateway.ServerProviders
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{server.Address}{_healthEndpoint}", cancellationToken);
+                var response = await _httpClient.GetAsync($"http://{server.Address}{_healthEndpoint}", cancellationToken);
                 server.Health = response.IsSuccessStatusCode ? ServerHealth.Healthy : ServerHealth.Unhealthy;
             }
             catch (Exception ex)

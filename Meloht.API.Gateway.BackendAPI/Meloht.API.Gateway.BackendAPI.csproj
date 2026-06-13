@@ -11,4 +11,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Meloht.API.Gateway.Client\Meloht.API.Gateway.Client.csproj" />
+  </ItemGroup>
+
 </Project>

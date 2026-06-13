@@ -1,3 +1,4 @@
+using Meloht.API.Gateway.Client;
 
 namespace Meloht.API.Gateway.BackendAPI
 {
@@ -25,8 +26,9 @@ namespace Meloht.API.Gateway.BackendAPI
             {
                 options.SwaggerEndpoint("/openapi/v1.json", "v1");
             });
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
+            app.UseGatewayClient();
             app.UseAuthorization();
 
 

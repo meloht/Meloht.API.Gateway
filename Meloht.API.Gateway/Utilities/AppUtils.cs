@@ -50,9 +50,10 @@ namespace Meloht.API.Gateway.Utilities
             List<ServerNode> serversList = new List<ServerNode>();
             foreach (var item in servers)
             {
-                updatedAddresses.Add(item.Address);
+                string address = GetAddress(item.Host, item.Port);
+                updatedAddresses.Add(address);
 
-                if (serversDict.TryGetValue(item.Address, out var node))
+                if (serversDict.TryGetValue(address, out var node))
                 {
                     node.Weight = GetWeight(item.Weight);
                     node.UniqueName = item.UniqueName;
@@ -74,7 +75,7 @@ namespace Meloht.API.Gateway.Utilities
                         Weight = GetWeight(item.Weight)
                     };
                     serversList.Add(nodeNew);
-                    serversDict.Add(item.Address, nodeNew);
+                    serversDict.Add(address, nodeNew);
                 }
             }
             List<string> toRemove = new List<string>();
