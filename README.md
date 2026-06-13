@@ -5,7 +5,7 @@
 * **Health Check**
 
 ## Performance testing
-
+Ten thousand concurrent request test
 ```json
   "Gateway": {
     "PoolSize": 1000,
