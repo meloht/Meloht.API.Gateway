@@ -10,8 +10,8 @@ namespace Meloht.API.Gateway
 {
     internal class AppSettings
     {
-        private const string HttpRequestTimeout = "Gateway:HttpRequestTimeout";
-        private const string PoolSize = "Gateway:PoolSize";
+        private const string HttpRequestTimeout = "Gateway:HttpRequestTimeoutSeconds";
+        private const string PoolSize = "Gateway:RequestQueuePoolSize";
         private const string LoadBalancingPolicy = "Gateway:LoadBalancingPolicy";
         private const string ConnectionString = "Gateway:DatabaseAutoUpdate:ConnectionString";
         private const string DatabaseAutoUpdateIntervalSeconds = "Gateway:DatabaseAutoUpdate:IntervalSeconds";
