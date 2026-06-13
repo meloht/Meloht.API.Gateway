@@ -8,8 +8,8 @@
 Ten thousand concurrent request test
 ```json
   "Gateway": {
-    "PoolSize": 1000,
-    "HttpRequestTimeout": 120,
+    "RequestQueuePoolSize": 1000,
+    "RequestTimeoutSeconds": 120,
     "LoadBalancingPolicy": "RoundRobin",
     "DatabaseAutoUpdate": {
       "IntervalSeconds": 120,
