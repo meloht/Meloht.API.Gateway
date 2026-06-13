@@ -19,7 +19,7 @@ namespace Meloht.API.Gateway
 
         public void Dispose()
         {
-            
+            Context = null;
         }
     }
 }
