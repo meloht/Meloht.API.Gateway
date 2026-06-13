@@ -10,7 +10,7 @@ namespace Meloht.API.Gateway
 {
     internal class AppSettings
     {
-        private const string HttpRequestTimeout = "Gateway:HttpRequestTimeoutSeconds";
+        private const string RequestTimeoutSeconds = "Gateway:RequestTimeoutSeconds";
         private const string PoolSize = "Gateway:RequestQueuePoolSize";
         private const string LoadBalancingPolicy = "Gateway:LoadBalancingPolicy";
         private const string ConnectionString = "Gateway:DatabaseAutoUpdate:ConnectionString";
@@ -60,7 +60,7 @@ namespace Meloht.API.Gateway
 
         public static int GetHttpRequestTimeout(IConfiguration configuration)
         {
-            int httpRequestTimeout = configuration.GetValue<int>(HttpRequestTimeout, 120);
+            int httpRequestTimeout = configuration.GetValue<int>(RequestTimeoutSeconds, 120);
             return httpRequestTimeout;
         }
         public static int GetPoolSize(IConfiguration configuration)
