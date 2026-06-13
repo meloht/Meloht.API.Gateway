@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,16 +9,17 @@ namespace Meloht.API.Gateway.Client
     public class HealthCheckMiddleware
     {
         private readonly RequestDelegate _next;
-
-        public HealthCheckMiddleware(RequestDelegate next)
+        private readonly ILogger<HealthCheckMiddleware> _logger;
+        public HealthCheckMiddleware(RequestDelegate next, ILogger<HealthCheckMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
             var path = context.Request.Path.Value;
-
+            _logger.LogInformation("Received request for path: {Path}", path);
             if (path != null && path.StartsWith("/health/live"))
             {
                 context.Response.StatusCode = StatusCodes.Status200OK;
