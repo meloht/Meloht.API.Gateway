@@ -11,7 +11,7 @@ Ten thousand concurrent request test
 ### JMeter & Service Endpoint 1
 |Hardware|Summary|
 | ------------- | ------------- | 
-|Windows |Windows 10 OS Version 19045.6466|
+|Windows |Windows 10 Pro 22H2|
 |CPU| AMD Ryzen 7 5800X 8-Core Processor 3.8GHz|
 |RAM| DDR4 3200 MHz 32GB|
 |Storage| SSD 2TB|
@@ -20,7 +20,7 @@ Ten thousand concurrent request test
 
 |Hardware|Summary|
 | ------------- | ------------- | 
-|Windows |Windows 10 pro|
+|Windows |Windows 10 Pro 22H2|
 |CPU| i7-10510U 2.3GHz|
 |RAM| DDR4 2667 MHz 16GB|
 |Storage| SSD 2TB|
@@ -29,7 +29,7 @@ Ten thousand concurrent request test
 
 |Hardware|Summary|
 | ------------- | ------------- | 
-|Windows |Windows 10 pro|
+|Windows |Windows 10 Pro 22H2|
 |CPU| i7-4500U 2.4GHz|
 |RAM| DDR3 1600 MHz 8GB|
 |Storage| HDD 1TB|
