@@ -59,11 +59,10 @@ namespace Meloht.API.Gateway
                 var tcs = new TaskCompletionSource<HttpResponseMessage>();
                 
                 using var ct = new CancellationTokenSource(_requestTimeout);
-
+                ct.Token.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
                 Guid guid = Guid.NewGuid();
                 _targetRequestQueue.TryAdd(guid, tcs);
-                ct.Token.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
-
+               
                 var requestModel = _requestModelPool.Rent();
                 requestModel.Guid = guid;
                 requestModel.Context = httpContext;
