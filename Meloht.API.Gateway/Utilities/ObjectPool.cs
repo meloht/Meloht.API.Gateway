@@ -5,13 +5,14 @@ using System.Text;
 
 namespace Meloht.API.Gateway.Utilities
 {
-    internal sealed class ObjectPool<T> : IDisposable where T : IDisposable
+    internal sealed class ObjectPool<T>
     {
         /// <summary>
         /// 创建对象的方法
         /// </summary>
         private readonly Func<T> _factory;
         private readonly Action<T>? _resetAction;
+        private readonly Action<T>? _disposeAction;
 
         /// <summary>
         /// 最大缓存数量
@@ -27,11 +28,12 @@ namespace Meloht.API.Gateway.Utilities
 
         private bool _disposed;
 
-        public ObjectPool(Func<T> factory, int maxSize = 30, Action<T>? resetAction = null)
+        public ObjectPool(Func<T> factory, int maxSize = 30, Action<T>? resetAction = null, Action<T>? disposeAction = null)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
             _maxSize = maxSize > 0 ? maxSize : 30;
             _resetAction = resetAction;
+            _disposeAction = disposeAction;
         }
 
         private void ThrowIfDisposed()
@@ -70,7 +72,7 @@ namespace Meloht.API.Gateway.Utilities
         {
             while (_items.TryTake(out var item))
             {
-                item?.Dispose();
+                _disposeAction?.Invoke(item);
             }
         }
         /// <summary>
@@ -83,7 +85,7 @@ namespace Meloht.API.Gateway.Utilities
 
             if (_disposed)
             {
-                item?.Dispose();
+                _disposeAction?.Invoke(item);
                 return;
             }
             _resetAction?.Invoke(item);
@@ -94,7 +96,7 @@ namespace Meloht.API.Gateway.Utilities
             }
             else
             {
-                item?.Dispose();
+                _disposeAction?.Invoke(item);
             }
         }
     }

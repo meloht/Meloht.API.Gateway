@@ -39,20 +39,25 @@ namespace Meloht.API.Gateway
 
             _channel = Channel.CreateBounded<RequestModel>(GetChannelOptions(_poolSize));
 
-            _requestModelPool = new ObjectPool<RequestModel>(() => new RequestModel(Guid.Empty, null), maxSize: Environment.ProcessorCount * 2);
+            _requestModelPool = new ObjectPool<RequestModel>(() => new RequestModel(Guid.Empty, null), maxSize: AppSettings.GetObjectPoolSize(), resetAction: ResetRequestModel);
             lifetime.ApplicationStopping.Register(() =>
             {
                 _channel.Writer.TryComplete();
             });
         }
 
+        private void ResetRequestModel(RequestModel requestModel)
+        {
+            requestModel.Guid = Guid.Empty;
+            requestModel.Context = null;
+        }
 
         public async Task ProcessRequestAsync(HttpContext httpContext)
         {
             try
             {
                 var tcs = new TaskCompletionSource<HttpResponseMessage>();
-
+                
                 using var ct = new CancellationTokenSource(_requestTimeout);
 
                 Guid guid = Guid.NewGuid();

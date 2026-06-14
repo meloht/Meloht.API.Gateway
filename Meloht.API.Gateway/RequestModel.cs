@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Meloht.API.Gateway
 {
-    public class RequestModel : IDisposable
+    public class RequestModel 
     {
         public Guid Guid { get; set; }
         public HttpContext Context { get; set; }
@@ -17,9 +17,6 @@ namespace Meloht.API.Gateway
             Context = context;
         }
 
-        public void Dispose()
-        {
-            Context = null;
-        }
+     
     }
 }

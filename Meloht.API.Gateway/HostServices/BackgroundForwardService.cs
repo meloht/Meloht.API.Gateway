@@ -1,4 +1,5 @@
 ﻿using Meloht.API.Gateway.LoadBalancing;
+using Meloht.API.Gateway.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,7 @@ namespace Meloht.API.Gateway.HostServices
         private readonly IGatewayProxy _gatewayProxy;
         private readonly ILoadBalancingPolicy _loadBalancingPolicy;
         private readonly IServerProvider _serverProvider;
+        private readonly ObjectPool<StringBuilder> _poolStringBuilder;
 
         public BackgroundForwardService(IHttpClientFactory httpClientFactory, ILoadBalancingPolicy loadBalancingPolicy, IServerProvider serverProvider, ILogger<GatewayProxyHandler> logger, IGatewayProxy gatewayProxy)
         {
@@ -26,6 +28,11 @@ namespace Meloht.API.Gateway.HostServices
             _serverProvider = serverProvider;
             _gatewayProxy = gatewayProxy;
             _httpClient = httpClientFactory.CreateClient(AppSettings.GatewayClient);
+            _poolStringBuilder = new ObjectPool<StringBuilder>(() => new StringBuilder(), maxSize: AppSettings.GetObjectPoolSize(), resetAction: ResetStringBuilder);
+        }
+        private void ResetStringBuilder(StringBuilder sb)
+        {
+            sb.Clear();
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -76,24 +83,37 @@ namespace Meloht.API.Gateway.HostServices
                 _gatewayProxy.ReturnPool(item);
             }
         }
-        private static string GetTargetUri(HttpContext context, string targetServer)
+        private string GetTargetUri(HttpContext context, string targetServer)
         {
-            StringBuilder urlBuilder = new StringBuilder();
-            urlBuilder.Append("http");
-  
-            if (context.Request.IsHttps)
+            StringBuilder urlBuilder = _poolStringBuilder.Rent();
+            try
             {
-                urlBuilder.Append('s');
+                urlBuilder.Append("http");
+
+                if (context.Request.IsHttps)
+                {
+                    urlBuilder.Append('s');
+                }
+
+                urlBuilder.Append("://").Append(targetServer).Append(context.Request.Path);
+
+                if (context.Request.Query != null && context.Request.Query.Count > 0)
+                {
+                    urlBuilder.Append(context.Request.QueryString.Value);
+                }
+
+                return urlBuilder.ToString();
             }
-
-            urlBuilder.Append("://").Append(targetServer).Append(context.Request.Path);
-
-            if (context.Request.Query != null && context.Request.Query.Count > 0)
+            catch (Exception ex)
             {
-                urlBuilder.Append(context.Request.QueryString.Value);
+                _logger.LogError(ex, $"GetTargetUri Error: {ex.Message}");
+                throw;
             }
-
-            return urlBuilder.ToString();
+            finally
+            {
+                _poolStringBuilder.Return(urlBuilder);
+            }
+           
         }
         private static HttpRequestMessage CreateProxyHttpRequest(HttpContext context, string targetUri)
         {
