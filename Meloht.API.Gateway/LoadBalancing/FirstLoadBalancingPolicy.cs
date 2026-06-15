@@ -23,11 +23,11 @@ namespace Meloht.API.Gateway.LoadBalancing
             for (var i = 1; i < serverNodes.Length; i++)
             {
                 var destination = serverNodes[i];
-                if (selectedDestination.Weight > destination.Weight)
+                if (selectedDestination.Weight < destination.Weight)
                 {
                     selectedDestination = destination;
                 }
-                else
+                else if(selectedDestination.Weight == destination.Weight)
                 {
                     if (string.Compare(selectedDestination.UniqueName, destination.UniqueName, StringComparison.OrdinalIgnoreCase) > 0)
                     {
