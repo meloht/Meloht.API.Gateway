@@ -44,6 +44,10 @@ namespace Meloht.API.Gateway
             {
                 _channel.Writer.TryComplete();
             });
+            lifetime.ApplicationStopped.Register(() =>
+            {
+                _requestModelPool.Dispose();
+            });
         }
 
         private void ResetRequestModel(RequestModel requestModel)
@@ -57,12 +61,12 @@ namespace Meloht.API.Gateway
             try
             {
                 var tcs = new TaskCompletionSource<HttpResponseMessage>();
-                
+
                 using var ct = new CancellationTokenSource(_requestTimeout);
                 ct.Token.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
                 Guid guid = Guid.NewGuid();
                 _targetRequestQueue.TryAdd(guid, tcs);
-               
+
                 var requestModel = _requestModelPool.Rent();
                 requestModel.Guid = guid;
                 requestModel.Context = httpContext;
@@ -83,7 +87,7 @@ namespace Meloht.API.Gateway
 
         private static async Task CopyProxyHttpResponse(HttpContext context, HttpResponseMessage responseMessage)
         {
-            
+
             if (responseMessage.Content.Headers.ContentType != null)
             {
                 context.Response.ContentType = responseMessage.Content.Headers.ContentType.ToString();

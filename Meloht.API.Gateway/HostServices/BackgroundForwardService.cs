@@ -39,6 +39,7 @@ namespace Meloht.API.Gateway.HostServices
             stoppingToken.Register(() =>
             {
                 _gatewayProxy.RequestChannel.Writer.TryComplete();
+                _poolStringBuilder.Dispose();
             });
             Task[] tasks = new Task[Environment.ProcessorCount];
             for (int i = 0; i < tasks.Length; i++)
