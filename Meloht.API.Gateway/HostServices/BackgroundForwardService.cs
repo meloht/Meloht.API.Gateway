@@ -28,7 +28,7 @@ namespace Meloht.API.Gateway.HostServices
             _serverProvider = serverProvider;
             _gatewayProxy = gatewayProxy;
             _httpClient = httpClientFactory.CreateClient(AppSettings.GatewayClient);
-            _poolStringBuilder = new ObjectPool<StringBuilder>(() => new StringBuilder(), maxSize: AppSettings.GetObjectPoolSize(), resetAction: ResetStringBuilder);
+            _poolStringBuilder = new ObjectPool<StringBuilder>(() => new StringBuilder(), maxSize: AppUtils.GetObjectPoolSize(), resetAction: ResetStringBuilder);
         }
         private void ResetStringBuilder(StringBuilder sb)
         {

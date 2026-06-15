@@ -110,5 +110,10 @@ namespace Meloht.API.Gateway.Utilities
             }
             return weight;
         }
+
+        internal static int GetObjectPoolSize()
+        {
+            return Environment.ProcessorCount * 2;
+        }
     }
 }

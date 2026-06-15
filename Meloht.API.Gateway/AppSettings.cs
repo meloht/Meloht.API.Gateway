@@ -69,9 +69,6 @@ namespace Meloht.API.Gateway
             return poolSize;
         }
 
-        internal static int GetObjectPoolSize()
-        {
-            return Environment.ProcessorCount * 2;
-        }
+
     }
 }
