@@ -1,7 +1,9 @@
 ﻿using Meloht.API.Gateway.Common;
+using Meloht.API.Gateway.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -14,16 +16,30 @@ namespace Meloht.API.Gateway.ServerProviders
         private readonly ILogger<HealthCheckServer> _logger;
         private readonly HttpClient _httpClient;
         private readonly string _healthEndpoint;
-        private readonly int _healthCheckTimeoutSeconds;
+        private int _healthCheckTimeoutSeconds;
+        private readonly IOptionsMonitor<HealthCheckConfig> _options;
 
-        public HealthCheckServer(IHttpClientFactory httpClientFactory, ILogger<HealthCheckServer> logger, IConfiguration configuration)
+        public HealthCheckServer(IHttpClientFactory httpClientFactory, ILogger<HealthCheckServer> logger, IOptionsMonitor<HealthCheckConfig> options)
         {
             _healthEndpoint = HealthCheckAPI.HealthCheckPath;
+            _options = options;
+            _options.OnChange(OnConfigChanged);
+            OnConfigChanged(_options.CurrentValue);
             _httpClient = httpClientFactory.CreateClient(AppSettings.GatewayClient);
             _logger = logger;
-            _healthCheckTimeoutSeconds = AppSettings.GetHealthRequestTimeoutSeconds(configuration);
-        }
 
+        }
+        private void OnConfigChanged(HealthCheckConfig options)
+        {
+            if (options != null && options.RequestTimeoutSeconds > 0)
+            {
+                _healthCheckTimeoutSeconds = options.RequestTimeoutSeconds;
+            }
+            else
+            {
+                _healthCheckTimeoutSeconds = AppSettings.HealthChecTimeoutSeconds;
+            }
+        }
 
         public async Task CheckServerHealthAsync(ParallelOptions parallelOptions, IReadOnlyList<ServerNode> servers)
         {

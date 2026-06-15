@@ -60,6 +60,10 @@ namespace Meloht.API.Gateway.HostServices
             {
                 throw new Exception("Failed to select target server.");
             }
+            if (targetServer.Address == null)
+            {
+                throw new Exception("targetServer address is null");
+            }
             return targetServer.Address;
         }
         private async Task ForwardRequestAsync(RequestModel item)
@@ -114,7 +118,7 @@ namespace Meloht.API.Gateway.HostServices
             {
                 _poolStringBuilder.Return(urlBuilder);
             }
-           
+
         }
         private static HttpRequestMessage CreateProxyHttpRequest(HttpContext context, string targetUri)
         {

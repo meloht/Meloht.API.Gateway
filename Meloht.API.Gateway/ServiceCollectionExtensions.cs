@@ -17,6 +17,8 @@ namespace Meloht.API.Gateway
     {
         public static void AddGatewaySettings(IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<ReverseProxyConfig>(configuration.GetSection(AppSettings.ReverseProxyKey));
+          
             services.AddSingleton<IRandomFactory, RandomFactory>();
             services.AddHttpClient(AppSettings.GatewayClient);
 
@@ -39,8 +41,14 @@ namespace Meloht.API.Gateway
             services.AddSingleton<IServerProvider, ServerProviderJson>();
         }
 
+        public static void AddDatabaseConfig(IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<DatabaseAutoUpdateConfig>(configuration.GetSection(AppSettings.DatabaseAutoUpdateKey));
+        }
+
         private static void AddHealthCheck(IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<HealthCheckConfig>(configuration.GetSection(AppSettings.HealthCheckKey));
             services.AddSingleton<HealthCheckServer>();
             services.AddHostedService<ServerHealthCheckService>();
         }

@@ -1,6 +1,8 @@
-﻿using Meloht.API.Gateway.ServerProviders;
+﻿using Meloht.API.Gateway.Configuration;
+using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MySqlConnector;
 using System;
 using System.Collections.Generic;
@@ -11,7 +13,7 @@ namespace Meloht.API.Gateway.MySql
 {
     public class ServerDataSourceMySql : DatabaseReadServerData
     {
-        public ServerDataSourceMySql(IConfiguration config, ILogger<DatabaseReadServerData> logger, HealthCheckServer checkServer) : base(config, logger, checkServer)
+        public ServerDataSourceMySql(ILogger<DatabaseReadServerData> logger, HealthCheckServer checkServer, IOptionsMonitor<DatabaseAutoUpdateConfig> options) : base(logger, checkServer, options)
         {
         }
 

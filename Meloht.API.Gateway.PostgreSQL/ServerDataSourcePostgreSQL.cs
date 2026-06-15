@@ -1,6 +1,8 @@
-﻿using Meloht.API.Gateway.ServerProviders;
+﻿using Meloht.API.Gateway.Configuration;
+using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -10,7 +12,7 @@ namespace Meloht.API.Gateway.PostgreSQL
 {
     public class ServerDataSourcePostgreSQL: DatabaseReadServerData
     {
-        public ServerDataSourcePostgreSQL(IConfiguration config, ILogger<DatabaseReadServerData> logger, HealthCheckServer checkServer) : base(config, logger, checkServer)
+        public ServerDataSourcePostgreSQL(ILogger<DatabaseReadServerData> logger, HealthCheckServer checkServer, IOptionsMonitor<DatabaseAutoUpdateConfig> options) : base(logger, checkServer, options)
         {
           
            

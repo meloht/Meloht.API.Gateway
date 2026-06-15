@@ -17,6 +17,7 @@ namespace Meloht.API.Gateway.PostgreSQL
 
         public static IServiceCollection AddGatewayService(this IServiceCollection services, IConfiguration configuration)
         {
+            ServiceCollectionExtensions.AddDatabaseConfig(services, configuration);
             AddGatewayServerProviderDatabase(services);
             ServiceCollectionExtensions.AddGatewaySettings(services, configuration);
             return services;

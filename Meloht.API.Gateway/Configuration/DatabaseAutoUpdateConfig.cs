@@ -8,6 +8,6 @@ namespace Meloht.API.Gateway.Configuration
     {
         public int IntervalSeconds { get; set; } = 120;
         public int DatabaseTimeoutSeconds { get; set; } = 5;
-        public string ConnectionString { get; set; }
+        public string? ConnectionString { get; set; }
     }
 }

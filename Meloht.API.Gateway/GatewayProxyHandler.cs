@@ -1,8 +1,10 @@
-﻿using Meloht.API.Gateway.Utilities;
+﻿using Meloht.API.Gateway.Configuration;
+using Meloht.API.Gateway.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Concurrent;
@@ -14,10 +16,10 @@ namespace Meloht.API.Gateway
 {
     public class GatewayProxyHandler : IGatewayProxy
     {
-
         private readonly Channel<RequestModel> _channel;
-        private readonly int _requestTimeout;
-        private readonly int _poolSize;
+        private int _requestTimeout;
+
+        private readonly IOptionsMonitor<ReverseProxyConfig> _options;
 
         private readonly ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>> _targetRequestQueue;
         private readonly ObjectPool<RequestModel> _requestModelPool;
@@ -28,16 +30,18 @@ namespace Meloht.API.Gateway
 
         ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>> IGatewayProxy.TargetRequestQueue => _targetRequestQueue;
 
-        public GatewayProxyHandler(IConfiguration configuration, IHostApplicationLifetime lifetime, ILogger<GatewayProxyHandler> logger)
+        public GatewayProxyHandler(IHostApplicationLifetime lifetime, ILogger<GatewayProxyHandler> logger, IOptionsMonitor<ReverseProxyConfig> options)
         {
+            _options = options;
+            _options.OnChange(OnConfigChanged);
+            OnConfigChanged(_options.CurrentValue);
             _targetRequestQueue = new ConcurrentDictionary<Guid, TaskCompletionSource<HttpResponseMessage>>();
 
-            _requestTimeout = AppSettings.GetHttpRequestTimeout(configuration) * 1000;
-            _poolSize = AppSettings.GetPoolSize(configuration);
+            var poolSize = GetPoolSize(_options.CurrentValue);
 
             _logger = logger;
 
-            _channel = Channel.CreateBounded<RequestModel>(GetChannelOptions(_poolSize));
+            _channel = Channel.CreateBounded<RequestModel>(GetChannelOptions(poolSize));
 
             _requestModelPool = new ObjectPool<RequestModel>(() => new RequestModel(Guid.Empty, null), maxSize: AppUtils.GetObjectPoolSize(), resetAction: ResetRequestModel);
             lifetime.ApplicationStopping.Register(() =>
@@ -49,6 +53,30 @@ namespace Meloht.API.Gateway
                 _requestModelPool.Dispose();
             });
         }
+
+        private void OnConfigChanged(ReverseProxyConfig options)
+        {
+            if (options != null)
+            {
+                _requestTimeout = options.RequestTimeoutSeconds;
+            }
+            else
+            {
+                _requestTimeout = AppSettings.ProxyRequestTimeoutSeconds;
+            }
+        }
+        private static int GetPoolSize(ReverseProxyConfig options)
+        {
+            if (options != null)
+            {
+                return options.RequestQueuePoolSize;
+            }
+            else
+            {
+                return AppSettings.ProxyRequestQueuePoolSize;
+            }
+        }
+
 
         private void ResetRequestModel(RequestModel requestModel)
         {
@@ -62,7 +90,7 @@ namespace Meloht.API.Gateway
             {
                 var tcs = new TaskCompletionSource<HttpResponseMessage>();
 
-                using var ct = new CancellationTokenSource(_requestTimeout);
+                using var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_requestTimeout));
                 ct.Token.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
                 Guid guid = Guid.NewGuid();
                 _targetRequestQueue.TryAdd(guid, tcs);

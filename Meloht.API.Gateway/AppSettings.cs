@@ -20,6 +20,18 @@ namespace Meloht.API.Gateway
         private const string HealthRequestTimeoutSeconds = "Gateway:HealthCheck:RequestTimeoutSeconds";
 
         public const string TargetServersKey = "Gateway:TargetServers";
+        public const string ReverseProxyKey = "Gateway:ReverseProxy";
+        public const string HealthCheckKey = "Gateway:HealthCheck";
+        public const string DatabaseAutoUpdateKey = "Gateway:DatabaseAutoUpdate";
+
+        internal const int ProxyRequestTimeoutSeconds = 120;
+        internal const int ProxyRequestQueuePoolSize = 1000;
+        internal const int DatabaseIntervalSeconds = 120;
+        internal const int DatabaseExecuteTimeoutSeconds = 5;
+
+
+        internal const int HealthCheckIntervalSeconds = 120;
+        internal const int HealthChecTimeoutSeconds = 5;
 
         public const string GatewayClient = "GatewayClient";
 
@@ -39,12 +51,12 @@ namespace Meloht.API.Gateway
         }
         public static int GetDatabaseAutoUpdateIntervalSeconds(IConfiguration configuration)
         {
-            var intervalSeconds = configuration.GetValue<int>(DatabaseAutoUpdateIntervalSeconds, 120);
+            var intervalSeconds = configuration.GetValue<int>(DatabaseAutoUpdateIntervalSeconds, DatabaseIntervalSeconds);
             return intervalSeconds;
         }
         public static int GetDatabaseTimeoutSeconds(IConfiguration configuration)
         {
-            var timeoutSeconds = configuration.GetValue<int>(DatabaseTimeoutSeconds, 5);
+            var timeoutSeconds = configuration.GetValue<int>(DatabaseTimeoutSeconds, DatabaseExecuteTimeoutSeconds);
             return timeoutSeconds;
         }
         public static int GetHealthIntervalSeconds(IConfiguration configuration)
@@ -60,12 +72,12 @@ namespace Meloht.API.Gateway
 
         public static int GetHttpRequestTimeout(IConfiguration configuration)
         {
-            int httpRequestTimeout = configuration.GetValue<int>(RequestTimeoutSeconds, 120);
+            int httpRequestTimeout = configuration.GetValue<int>(RequestTimeoutSeconds, ProxyRequestTimeoutSeconds);
             return httpRequestTimeout;
         }
         public static int GetPoolSize(IConfiguration configuration)
         {
-            int poolSize = configuration.GetValue<int>(PoolSize, 100);
+            int poolSize = configuration.GetValue<int>(PoolSize, ProxyRequestQueuePoolSize);
             return poolSize;
         }
 

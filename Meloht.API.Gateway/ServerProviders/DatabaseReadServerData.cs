@@ -4,6 +4,7 @@ using Meloht.API.Gateway.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -14,20 +15,43 @@ namespace Meloht.API.Gateway.ServerProviders
     public abstract class DatabaseReadServerData : ServerBase
     {
         private readonly ILogger<DatabaseReadServerData> _logger;
-        private readonly string _connectionString;
+        private string _connectionString;
 
         protected abstract DbConnection GetDbConnection(string connectionString);
         protected abstract DbCommand GetDbCommand(string sql, DbConnection connection);
 
-        private readonly int _databaseTimeoutSeconds;
+        private int _databaseTimeoutSeconds;
 
-        public DatabaseReadServerData(IConfiguration config, ILogger<DatabaseReadServerData> logger, HealthCheckServer healthCheck) : base(healthCheck)
+        private readonly IOptionsMonitor<DatabaseAutoUpdateConfig> _options;
+
+        public DatabaseReadServerData(ILogger<DatabaseReadServerData> logger, HealthCheckServer healthCheck, IOptionsMonitor<DatabaseAutoUpdateConfig> options) : base(healthCheck)
         {
             _logger = logger;
-            _connectionString = AppSettings.GetConnectionString(config);
-            _databaseTimeoutSeconds = AppSettings.GetDatabaseTimeoutSeconds(config);
+            _options = options;
+            _options.OnChange(OnConfigChanged);
+            OnConfigChanged(_options.CurrentValue);
         }
+        private void OnConfigChanged(DatabaseAutoUpdateConfig options)
+        {
+            if (options != null && options.DatabaseTimeoutSeconds > 0)
+            {
+                _databaseTimeoutSeconds = options.DatabaseTimeoutSeconds;
+            }
+            else
+            {
+                _databaseTimeoutSeconds = AppSettings.DatabaseExecuteTimeoutSeconds;
+            }
 
+            if (options != null && !string.IsNullOrWhiteSpace(options.ConnectionString))
+            {
+                _connectionString = options.ConnectionString;
+            }
+            else
+            {
+                throw new ArgumentNullException("ConnectionString");
+            }
+
+        }
 
         public async Task DataReadAsync(ParallelOptions parallelOptions, CancellationToken cancellationToken)
         {
