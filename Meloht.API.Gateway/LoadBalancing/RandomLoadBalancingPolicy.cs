@@ -30,7 +30,7 @@ namespace Meloht.API.Gateway.LoadBalancing
                 return null;
             }
             var random = _randomFactory.CreateRandomInstance();
-            int idx= cluster.WeightIndexArr[random.Next(cluster.WeightIndexArr.Length)];
+            int idx = cluster.WeightIndexArr[random.Next(cluster.WeightIndexArr.Length)];
             return cluster.Servers[idx];
         }
     }

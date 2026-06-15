@@ -19,11 +19,11 @@ namespace Meloht.API.Gateway.LoadBalancing
 
             var destinationCount = serverNodes.Length;
             var leastRequestsDestination = serverNodes[0];
-            var leastRequestsCount = leastRequestsDestination.ConcurrentRequestCount;
+            float leastRequestsCount = (float)leastRequestsDestination.ConcurrentRequestCount / leastRequestsDestination.Weight;
             for (var i = 1; i < destinationCount; i++)
             {
                 var destination = serverNodes[i];
-                var endpointRequestCount = destination.ConcurrentRequestCount;
+                var endpointRequestCount = (float)destination.ConcurrentRequestCount / destination.Weight;
                 if (endpointRequestCount < leastRequestsCount)
                 {
                     leastRequestsDestination = destination;

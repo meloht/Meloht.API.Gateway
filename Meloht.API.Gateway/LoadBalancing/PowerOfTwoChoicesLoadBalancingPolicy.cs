@@ -46,7 +46,9 @@ namespace Meloht.API.Gateway.LoadBalancing
             } while (firstIndex == secondIndex);
             var first = serverNodes[firstIndex];
             var second = serverNodes[secondIndex];
-            return (first.ConcurrentRequestCount <= second.ConcurrentRequestCount) ? first : second;
+            float f = (float)first.ConcurrentRequestCount / first.Weight;
+            float s = (float)second.ConcurrentRequestCount / second.Weight;
+            return (f <= s) ? first : second;
         }
     }
 }
