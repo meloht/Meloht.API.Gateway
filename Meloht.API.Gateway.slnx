@@ -12,5 +12,6 @@
   <Project Path="Meloht.API.ServiceDiscovery.Provider.MySql/Meloht.API.ServiceDiscovery.Provider.MySql.csproj" Id="f8d3bd83-214a-4829-b4d8-00982b9f4a90" />
   <Project Path="Meloht.API.ServiceDiscovery.Provider.PostgreSQL/Meloht.API.ServiceDiscovery.Provider.PostgreSQL.csproj" Id="de4b4ca1-dc37-43f8-923f-a9de6649582d" />
   <Project Path="Meloht.API.ServiceDiscovery.Provider.SqlServer/Meloht.API.ServiceDiscovery.Provider.SqlServer.csproj" Id="e7c732bc-3dee-40ea-8b0d-aa6f09dbbb6f" />
+  <Project Path="Meloht.API.ServiceDiscovery.Server.UI/Meloht.API.ServiceDiscovery.Server.UI.csproj" Id="09f968aa-44d5-4e69-bda4-3bd5b543755c" />
   <Project Path="Meloht.API.ServiceDiscovery.Server/Meloht.API.ServiceDiscovery.Server.csproj" Id="ec238801-351a-4b04-b80d-d006c1af31b5" />
 </Solution>
