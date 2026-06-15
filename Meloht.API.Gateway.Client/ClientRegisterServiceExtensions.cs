@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Meloht.API.Gateway.Common;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace Meloht.API.Gateway.Client
         public static void AddClientServiceDiscovery(this IServiceCollection services)
         {
             services.AddHostedService<ClientRegisterService>();
+            services.AddHttpClient(HttpClientKey.ClientKey);
         }
 
         public static IApplicationBuilder UseGatewayClient(this IApplicationBuilder builder)

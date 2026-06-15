@@ -5,13 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Meloht.API.Gateway.Client
+namespace Meloht.API.Gateway.ServiceDiscovery
 {
-    public class HealthCheckMiddleware
+    public class ServiceDiscoveryMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger<HealthCheckMiddleware> _logger;
-        public HealthCheckMiddleware(RequestDelegate next, ILogger<HealthCheckMiddleware> logger)
+        private readonly ILogger<ServiceDiscoveryMiddleware> _logger;
+        public ServiceDiscoveryMiddleware(RequestDelegate next, ILogger<ServiceDiscoveryMiddleware> logger)
         {
             _next = next;
             _logger = logger;
@@ -20,13 +20,13 @@ namespace Meloht.API.Gateway.Client
         public async Task InvokeAsync(HttpContext context)
         {
             var path = context.Request.Path.Value;
-          
-            if (path != null && path.StartsWith(HealthCheckAPI.HealthCheckPath))
+
+            if (path != null && path.StartsWith(ServiceDiscoveryKey.RegisterPath))
             {
                 _logger.LogInformation("Received request for path: {Path}", path);
                 context.Response.StatusCode = StatusCodes.Status200OK;
                 context.Response.ContentType = "application/json";
-
+                
                 var result = new
                 {
                     Message = "OK",

@@ -1,6 +1,6 @@
 ﻿namespace Meloht.API.Gateway.Common
 {
-    public class HealthCheckAPI
+    public static class HealthCheckAPI
     {
         public const string HealthCheckPath = "/health/live";
     }
