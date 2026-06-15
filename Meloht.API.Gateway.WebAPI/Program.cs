@@ -1,3 +1,4 @@
+using Meloht.API.Gateway.Json;
 
 namespace Meloht.API.Gateway.WebAPI
 {
@@ -14,9 +15,7 @@ namespace Meloht.API.Gateway.WebAPI
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-            builder.Services.AddGatewayServerProviderJson(builder.Configuration);
-            builder.Services.AddGatewaySettings(builder.Configuration);
-
+            builder.Services.AddGatewayService(builder.Configuration);
 
             var app = builder.Build();
 

@@ -1,4 +1,5 @@
-﻿using Meloht.API.Gateway.HostServices;
+﻿using Meloht.API.Gateway.Configuration;
+using Meloht.API.Gateway.HostServices;
 using Meloht.API.Gateway.LoadBalancing;
 using Meloht.API.Gateway.ServerProviders;
 using Meloht.API.Gateway.Utilities;
@@ -14,12 +15,11 @@ namespace Meloht.API.Gateway
 {
     public static class ServiceCollectionExtensions
     {
-
-        public static IServiceCollection AddGatewaySettings(this IServiceCollection services, IConfiguration configuration)
+        public static void AddGatewaySettings(IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IRandomFactory, RandomFactory>();
             services.AddHttpClient(AppSettings.GatewayClient);
-           
+
             AddLoadBalancingPolicy(services, configuration);
 
             services.AddSingleton<IGatewayProxy, GatewayProxyHandler>();
@@ -27,14 +27,13 @@ namespace Meloht.API.Gateway
             services.AddHostedService<BackgroundForwardService>();
             AddHealthCheck(services, configuration);
 
-            return services;
         }
         public static IApplicationBuilder UseGateway(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<RequestHandlerMiddleware>();
         }
 
-        public static void AddGatewayServerProviderJson(this IServiceCollection services, IConfiguration configuration)
+        public static void AddGatewayServerProviderJson(IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<List<ServerNodeConfig>>(configuration.GetSection(AppSettings.TargetServersKey));
             services.AddSingleton<IServerProvider, ServerProviderJson>();

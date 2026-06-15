@@ -7,11 +7,19 @@ namespace Meloht.API.Gateway.PostgreSQL
 {
     public static class ServerProviderExtensions
     {
-        public static void AddServerProviderPostgreSQL(this IServiceCollection services)
+
+        public static void AddGatewayServerProviderDatabase(IServiceCollection services)
         {
             services.AddHostedService<DatabaseAutoUpdateService>();
             services.AddSingleton<DatabaseReadServerData, ServerDataSourcePostgreSQL>();
             services.AddSingleton<IServerProvider, ServerProviderDatabase>();
+        }
+
+        public static IServiceCollection AddGatewayService(this IServiceCollection services, IConfiguration configuration)
+        {
+            AddGatewayServerProviderDatabase(services);
+            ServiceCollectionExtensions.AddGatewaySettings(services, configuration);
+            return services;
         }
     }
 }

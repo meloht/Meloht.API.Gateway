@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Meloht.API.Gateway\Meloht.API.Gateway.csproj" />
+    <ProjectReference Include="..\Meloht.API.Gateway.Json\Meloht.API.Gateway.Json.csproj" />
   </ItemGroup>
 
 </Project>

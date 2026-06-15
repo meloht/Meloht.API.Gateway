@@ -5,13 +5,20 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Meloht.API.Gateway.MySql
 {
-    public static class ServerProviderExtensions
+    public static class ServerProviderExtensions 
     {
-        public static void AddServerProviderMySql(this IServiceCollection services)
+        private static void AddGatewayServerProviderDatabase(IServiceCollection services)
         {
             services.AddHostedService<DatabaseAutoUpdateService>();
             services.AddSingleton<DatabaseReadServerData, ServerDataSourceMySql>();
             services.AddSingleton<IServerProvider, ServerProviderDatabase>();
+        }
+
+        public static IServiceCollection AddGatewayService(this IServiceCollection services, IConfiguration configuration)
+        {
+            AddGatewayServerProviderDatabase(services);
+            ServiceCollectionExtensions.AddGatewaySettings(services, configuration);
+            return services;
         }
     }
 }
