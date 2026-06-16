@@ -43,7 +43,7 @@ namespace Meloht.API.Gateway
 
             _channel = Channel.CreateBounded<RequestModel>(GetChannelOptions(poolSize));
 
-            _requestModelPool = new ObjectPool<RequestModel>(() => new RequestModel(Guid.Empty, null), maxSize: AppUtils.GetObjectPoolSize(), resetAction: ResetRequestModel);
+            _requestModelPool = new ObjectPool<RequestModel>(() => new RequestModel(Guid.Empty, null), maxSize: poolSize, resetAction: ResetRequestModel);
             lifetime.ApplicationStopping.Register(() =>
             {
                 _channel.Writer.TryComplete();

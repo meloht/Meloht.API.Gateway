@@ -55,12 +55,12 @@ namespace Meloht.API.Gateway.ServerProviders
         {
             try
             {
-                var response = await _httpClient.GetAsync($"http://{server.Address}{_healthEndpoint}", cancellationToken);
+                var response = await _httpClient.GetAsync($"{server.Protocol}://{server.Host}{_healthEndpoint}", cancellationToken);
                 server.Health = response.IsSuccessStatusCode ? ServerHealth.Healthy : ServerHealth.Unhealthy;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error checking health of server {server}", server.Address);
+                _logger.LogError(ex, "Error checking health of server {server}", server.Host);
                 server.Health = ServerHealth.Unhealthy;
             }
         }

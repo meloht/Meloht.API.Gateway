@@ -60,7 +60,7 @@ namespace Meloht.API.Gateway.ServerProviders
                 using var conn = GetDbConnection(_connectionString);
                 await conn.OpenAsync();
 
-                string sql = "SELECT Id, UniqueName, Host, Port, Weight FROM server_nodes where active = 1 order by Id";
+                string sql = "SELECT Id, UniqueName, Host, Protocol, Weight FROM server_nodes where active = 1 order by Id";
 
                 using var cmd = GetDbCommand(sql, conn);
 
@@ -75,7 +75,7 @@ namespace Meloht.API.Gateway.ServerProviders
                     int id = reader.GetInt32(0);
                     string name = reader.GetString(1);
                     string host = reader.GetString(2);
-                    int port = reader.GetInt32(3);
+                    string protocol = reader.GetString(3);
                     int weight = reader.GetInt32(4);
 
                     servers.Add(new ServerNodeConfig
@@ -83,8 +83,7 @@ namespace Meloht.API.Gateway.ServerProviders
                         Id = id,
                         UniqueName = name,
                         Host = host,
-                        Port = port,
-                        Address = AppUtils.GetAddress(host, port),
+                        Protocol = protocol,
                         Weight = AppUtils.GetWeight(weight),
                     });
                 }

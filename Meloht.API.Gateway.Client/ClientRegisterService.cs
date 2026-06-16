@@ -12,20 +12,20 @@ namespace Meloht.API.Gateway.Client
     {
         private readonly HttpClient _httpClient;
         private readonly string? _serviceDiscoveryHost;
-        private readonly int? _port;
         private readonly string? _registerPath;
         private readonly string? _logoutPath;
         private readonly ILogger<ClientRegisterService> _logger;
         private readonly int _requestTimeoutSeconds;
+        private readonly string? _protocol;
 
         public ClientRegisterService(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<ClientRegisterService> logger)
         {
             _httpClient = httpClientFactory.CreateClient(HttpClientKey.ClientKey);
-            _serviceDiscoveryHost = configuration.GetValue<string>(ServiceDiscoveryKey.ServiceDiscoveryHost);
+            _serviceDiscoveryHost = configuration.GetValue<string>(ServiceDiscoveryKey.ServiceDiscoveryHostKey);
             _registerPath = configuration.GetValue<string>(ServiceDiscoveryKey.RegisterPath);
             _logoutPath = configuration.GetValue<string>(ServiceDiscoveryKey.LogoutPath);
-            _port = configuration.GetValue<int>(ServiceDiscoveryKey.ServiceDiscoveryPort);
-            _requestTimeoutSeconds = configuration.GetValue<int>(ServiceDiscoveryKey.RequestTimeoutSeconds);
+            _protocol = configuration.GetValue<string>(ServiceDiscoveryKey.ServiceDiscoveryProtocolKey);
+            _requestTimeoutSeconds = configuration.GetValue<int>(ServiceDiscoveryKey.RequestTimeoutSecondsKey);
             _logger = logger;
 
         }
@@ -36,10 +36,10 @@ namespace Meloht.API.Gateway.Client
                 _logger.LogError("service discovery host is null");
                 throw new ArgumentException("service discovery host is null");
             }
-            if (_port == null)
+            if (string.IsNullOrEmpty(_protocol))
             {
-                _logger.LogError("service discovery port is null");
-                throw new ArgumentException("service discovery port is null");
+                _logger.LogError("service discovery protocol is null");
+                throw new ArgumentException("service discovery protocol is null");
             }
             if (string.IsNullOrEmpty(_registerPath))
             {
@@ -48,7 +48,7 @@ namespace Meloht.API.Gateway.Client
             }
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             cts.CancelAfter(TimeSpan.FromSeconds(_requestTimeoutSeconds));
-            string url = $"http://{_serviceDiscoveryHost}:{_port.Value}/{_registerPath}";
+            string url = $"{_protocol}://{_serviceDiscoveryHost}{_registerPath}";
             using var res = await _httpClient.GetAsync(url, cts.Token);
 
             if (res.IsSuccessStatusCode)
@@ -65,7 +65,7 @@ namespace Meloht.API.Gateway.Client
         {
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             cts.CancelAfter(TimeSpan.FromSeconds(_requestTimeoutSeconds));
-            string url = $"http://{_serviceDiscoveryHost}:{_port.Value}/{_logoutPath}";
+            string url = $"{_protocol}://{_serviceDiscoveryHost}{_logoutPath}";
             using var res = await _httpClient.GetAsync(url, cts.Token);
 
             if (res.IsSuccessStatusCode)

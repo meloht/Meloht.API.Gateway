@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Net.Mime;
 using System.Text;
 
 namespace Meloht.API.Gateway.Client
@@ -25,7 +26,7 @@ namespace Meloht.API.Gateway.Client
             {
                 _logger.LogInformation("Received request for path: {Path}", path);
                 context.Response.StatusCode = StatusCodes.Status200OK;
-                context.Response.ContentType = "application/json";
+                context.Response.ContentType = MediaTypeNames.Application.Json;
 
                 var result = new
                 {

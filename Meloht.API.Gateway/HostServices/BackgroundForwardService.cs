@@ -60,11 +60,11 @@ namespace Meloht.API.Gateway.HostServices
             {
                 throw new Exception("Failed to select target server.");
             }
-            if (targetServer.Address == null)
+            if (targetServer.Host == null)
             {
-                throw new Exception("targetServer address is null");
+                throw new Exception("targetServer host is null");
             }
-            return targetServer.Address;
+            return targetServer.Host;
         }
         private async Task ForwardRequestAsync(RequestModel item)
         {

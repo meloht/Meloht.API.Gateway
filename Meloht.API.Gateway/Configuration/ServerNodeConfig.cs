@@ -8,10 +8,16 @@ namespace Meloht.API.Gateway.Configuration
     {
         public int Id { get; set; }
         public required string UniqueName { get; set; }
-
-        public required int Port { get; set; }
+        /// <summary>
+        /// ip + port
+        /// </summary>
         public required string Host { get; set; }
-        public string? Address { get; set; }
+
+
+        /// <summary>
+        /// http or https
+        /// </summary>
+        public required string Protocol { get; set; }
 
         public int Weight { get; set; }
     }
