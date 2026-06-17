@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Meloht.API.ServiceDiscovery.Server\Meloht.API.ServiceDiscovery.Server.csproj" />
+  </ItemGroup>
+
 </Project>

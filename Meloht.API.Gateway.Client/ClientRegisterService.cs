@@ -23,7 +23,7 @@ namespace Meloht.API.Gateway.Client
             _httpClient = httpClientFactory.CreateClient(HttpClientKey.ClientKey);
             _serviceDiscoveryHost = configuration.GetValue<string>(ServiceDiscoveryKey.ServiceDiscoveryHostKey);
             _registerPath = configuration.GetValue<string>(ServiceDiscoveryKey.RegisterPath);
-            _logoutPath = configuration.GetValue<string>(ServiceDiscoveryKey.LogoutPath);
+            _logoutPath = configuration.GetValue<string>(ServiceDiscoveryKey.UnregisterPath);
             _protocol = configuration.GetValue<string>(ServiceDiscoveryKey.ServiceDiscoveryProtocolKey);
             _requestTimeoutSeconds = configuration.GetValue<int>(ServiceDiscoveryKey.RequestTimeoutSecondsKey);
             _logger = logger;

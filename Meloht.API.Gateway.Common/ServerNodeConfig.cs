@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Meloht.API.Gateway.Configuration
+namespace Meloht.API.Gateway.Common
 {
     public class ServerNodeConfig
     {

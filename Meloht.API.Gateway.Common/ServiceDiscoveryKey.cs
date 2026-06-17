@@ -11,6 +11,6 @@ namespace Meloht.API.Gateway.Common
         public const string RequestTimeoutSecondsKey = "RequestTimeoutSeconds";
       
         public const string RegisterPath = "/register";
-        public const string LogoutPath = "/logout";
+        public const string UnregisterPath = "/unregister";
     }
 }

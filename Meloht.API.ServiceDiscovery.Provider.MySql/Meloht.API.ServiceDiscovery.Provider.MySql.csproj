@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MySqlConnector" Version="2.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Meloht.API.ServiceDiscovery.Server\Meloht.API.ServiceDiscovery.Server.csproj" />
+  </ItemGroup>
+
 </Project>

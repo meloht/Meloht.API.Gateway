@@ -65,6 +65,7 @@ namespace Meloht.API.Gateway.BackendAPI.Controllers
         [HttpPost("test")]
         public IEnumerable<WeatherForecast> Test([FromBody] LoginData request)
         {
+           
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -117,6 +118,7 @@ namespace Meloht.API.Gateway.BackendAPI.Controllers
         {
             string filePath = Path.Combine("uploads", Guid.NewGuid().ToString());
 
+            
             var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
 
             if (!Directory.Exists(uploadPath))
