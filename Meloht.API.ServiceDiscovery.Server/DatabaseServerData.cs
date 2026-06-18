@@ -1,5 +1,7 @@
 ﻿using Meloht.API.Gateway.Common.Configuration;
+using Meloht.API.ServiceDiscovery.Server.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -10,7 +12,6 @@ namespace Meloht.API.ServiceDiscovery.Server
     public abstract class DatabaseServerData
     {
         private readonly ILogger<DatabaseServerData> _logger;
-        private string _connectionString;
 
         protected abstract DbConnection GetDbConnection(string connectionString);
         protected abstract DbCommand GetDbCommand(string sql, DbConnection connection);
@@ -18,27 +19,30 @@ namespace Meloht.API.ServiceDiscovery.Server
         protected abstract void AddParameterString(DbCommand cmd, string name, string val);
         protected abstract void AddParameterInt(DbCommand cmd, string name, int val);
 
-        private int _databaseTimeoutSeconds;
 
+        private DatabaseConfig _databaseConfig;
 
-        public DatabaseServerData(ILogger<DatabaseServerData> logger)
+        public DatabaseServerData(ILogger<DatabaseServerData> logger, IOptionsMonitor<DatabaseConfig> options)
         {
             _logger = logger;
+            _databaseConfig = options.CurrentValue;
+            options.OnChange(val => _databaseConfig = val);
         }
 
 
         public async Task<bool> RegisterSaveAndUpdateAsync(ServerNodeConfig serverConfig)
         {
             ValidationData(serverConfig);
-            using var conn = GetDbConnection(_connectionString);
+            using var conn = GetDbConnection(_databaseConfig.ConnectionString);
             await conn.OpenAsync();
 
             string sql = "SELECT UniqueName FROM server_nodes where UniqueName=@name";
 
             using var cmd = GetDbCommand(sql, conn);
             AddParameterString(cmd, "name", serverConfig.UniqueName);
-
-            var res = await cmd.ExecuteScalarAsync();
+            cmd.CommandTimeout = _databaseConfig.DatabaseTimeoutSeconds;
+            using var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_databaseConfig.DatabaseTimeoutSeconds));
+            var res = await cmd.ExecuteScalarAsync(ct.Token);
             string sqlData;
             if (res != null && res.ToString().Trim() == serverConfig.UniqueName)
             {
@@ -61,15 +65,16 @@ namespace Meloht.API.ServiceDiscovery.Server
         public async Task<bool> UnregisterUpdateAsync(ServerNodeConfig serverConfig)
         {
             ValidationData(serverConfig);
-            using var conn = GetDbConnection(_connectionString);
+            using var conn = GetDbConnection(_databaseConfig.ConnectionString);
             await conn.OpenAsync();
 
             string sql = "SELECT UniqueName FROM server_nodes where UniqueName=@name";
 
             using var cmd = GetDbCommand(sql, conn);
             AddParameterString(cmd, "name", serverConfig.UniqueName);
-
-            var res = await cmd.ExecuteScalarAsync();
+            cmd.CommandTimeout = _databaseConfig.DatabaseTimeoutSeconds;
+            using var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_databaseConfig.DatabaseTimeoutSeconds));
+            var res = await cmd.ExecuteScalarAsync(ct.Token);
 
             if (res != null && res.ToString().Trim() == serverConfig.UniqueName)
             {
@@ -88,6 +93,7 @@ namespace Meloht.API.ServiceDiscovery.Server
 
         private void ValidationData(ServerNodeConfig serverConfig)
         {
+            
             if (string.IsNullOrWhiteSpace(serverConfig.UniqueName))
             {
                 throw new ArgumentException("serverConfig.UniqueName is null or empty");

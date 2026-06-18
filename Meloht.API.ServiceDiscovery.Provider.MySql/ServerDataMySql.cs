@@ -1,5 +1,7 @@
 ﻿using Meloht.API.ServiceDiscovery.Server;
+using Meloht.API.ServiceDiscovery.Server.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MySqlConnector;
 using System;
 using System.Collections.Generic;
@@ -10,7 +12,7 @@ namespace Meloht.API.ServiceDiscovery.Provider.MySql
 {
     public class ServerDataMySql : DatabaseServerData
     {
-        public ServerDataMySql(ILogger<DatabaseServerData> logger) : base(logger)
+        public ServerDataMySql(ILogger<DatabaseServerData> logger, IOptionsMonitor<DatabaseConfig> options) : base(logger, options)
         {
         }
 

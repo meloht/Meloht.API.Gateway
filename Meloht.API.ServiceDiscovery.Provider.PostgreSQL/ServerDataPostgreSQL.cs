@@ -1,5 +1,7 @@
 ﻿using Meloht.API.ServiceDiscovery.Server;
+using Meloht.API.ServiceDiscovery.Server.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Npgsql;
 using System;
 using System.Collections.Generic;
@@ -10,7 +12,7 @@ namespace Meloht.API.ServiceDiscovery.Provider.PostgreSQL
 {
     public class ServerDataPostgreSQL : DatabaseServerData
     {
-        public ServerDataPostgreSQL(ILogger<DatabaseServerData> logger) : base(logger)
+        public ServerDataPostgreSQL(ILogger<DatabaseServerData> logger, IOptionsMonitor<DatabaseConfig> options) : base(logger, options)
         {
         }
 

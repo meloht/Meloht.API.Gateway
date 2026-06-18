@@ -1,6 +1,8 @@
 ﻿using Meloht.API.ServiceDiscovery.Server;
+using Meloht.API.ServiceDiscovery.Server.Configuration;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -10,7 +12,7 @@ namespace Meloht.API.ServiceDiscovery.Provider.SqlServer
 {
     public class ServerDataSqlServer : DatabaseServerData
     {
-        public ServerDataSqlServer(ILogger<DatabaseServerData> logger) : base(logger)
+        public ServerDataSqlServer(ILogger<DatabaseServerData> logger, IOptionsMonitor<DatabaseConfig> options) : base(logger, options)
         {
         }
 

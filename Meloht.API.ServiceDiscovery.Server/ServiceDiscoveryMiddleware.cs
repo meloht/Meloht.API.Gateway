@@ -14,10 +14,12 @@ namespace Meloht.API.ServiceDiscovery.Server
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<ServiceDiscoveryMiddleware> _logger;
-        public ServiceDiscoveryMiddleware(RequestDelegate next, ILogger<ServiceDiscoveryMiddleware> logger)
+        private readonly DatabaseServerData _databaseServer;
+        public ServiceDiscoveryMiddleware(RequestDelegate next, ILogger<ServiceDiscoveryMiddleware> logger, DatabaseServerData databaseServer)
         {
             _next = next;
             _logger = logger;
+            _databaseServer = databaseServer;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -27,6 +29,7 @@ namespace Meloht.API.ServiceDiscovery.Server
             if (path != null && path.StartsWith(ServiceDiscoveryKey.RegisterPath))
             {
                 _logger.LogInformation("ServiceDiscovery Server Received request for path: {Path}", path);
+
                 await ClientRegisterAsync(context, path);
 
                 return; // 关键：直接结束，不再进入后续 pipeline
@@ -37,19 +40,27 @@ namespace Meloht.API.ServiceDiscovery.Server
 
         private async Task ClientRegisterAsync(HttpContext context, string path)
         {
-            context.Response.StatusCode = StatusCodes.Status200OK;
-            context.Response.ContentType = MediaTypeNames.Application.Json;
-            var res = JsonHelper.ReadJsonAsync<ServerNodeConfig>(context.Request.Body);
-            var result = new
+            var clientNode = await JsonHelper.ReadJsonAsync<ServerNodeConfig>(context.Request.Body);
+            if (clientNode == null)
             {
-                Message = "OK",
-                Path = path,
-                Host = context.Request.Host,
-            };
-
+                await context.WriteResponseErrorAsync("clientNode is null");
+                return;
+            }
+            clientNode.Host = context.Request.Host.ToString();
+            var rent = await _databaseServer.RegisterSaveAndUpdateAsync(clientNode);
+            if (rent)
+            {
+                await context.WriteResponseSuccessAsync("Client register success");
+                return;
+            }
+            else
+            {
+                await context.WriteResponseErrorAsync("Client register failed");
+                return;
+            }
           
-            string json = System.Text.Json.JsonSerializer.Serialize(result);
-            await context.Response.WriteAsync(json);
         }
+
+
     }
 }

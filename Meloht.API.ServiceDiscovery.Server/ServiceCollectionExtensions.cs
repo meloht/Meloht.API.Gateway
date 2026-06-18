@@ -14,12 +14,12 @@ namespace Meloht.API.ServiceDiscovery.Server
 
         public static void AddDatabaseConfig(IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<DatabaseConfig>(configuration.GetSection(AppSettings.DatabaseConfigKey));
+            services.AddOptions<DatabaseConfig>().Bind(configuration.GetSection(AppSettings.DatabaseConfigKey)).ValidateDataAnnotations().ValidateOnStart();
         }
 
         public static void AddHealthCheck(IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<HealthCheckConfig>(configuration.GetSection(AppSettings.HealthCheckConfigKey));
+            services.AddOptions<HealthCheckConfig>().Bind(configuration.GetSection(AppSettings.HealthCheckConfigKey)).ValidateDataAnnotations().ValidateOnStart();
             services.AddSingleton<HealthCheckServer>();
             services.AddHostedService<ServerHealthCheckService>();
         }
