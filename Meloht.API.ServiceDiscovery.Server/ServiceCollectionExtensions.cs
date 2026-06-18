@@ -17,7 +17,7 @@ namespace Meloht.API.ServiceDiscovery.Server
             services.Configure<DatabaseConfig>(configuration.GetSection(AppSettings.DatabaseConfigKey));
         }
 
-        private static void AddHealthCheck(IServiceCollection services, IConfiguration configuration)
+        public static void AddHealthCheck(IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<HealthCheckConfig>(configuration.GetSection(AppSettings.HealthCheckConfigKey));
             services.AddSingleton<HealthCheckServer>();
