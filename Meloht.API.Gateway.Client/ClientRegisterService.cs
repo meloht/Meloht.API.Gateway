@@ -48,7 +48,12 @@ namespace Meloht.API.Gateway.Client
             cts.CancelAfter(TimeSpan.FromSeconds(_gatewayConfig.RequestTimeoutSeconds));
             string url = $"{_gatewayConfig.ServiceDiscoveryProtocol}://{_gatewayConfig.ServiceDiscoveryHost}{ServiceDiscoveryKey.RegisterPath}";
 
-            var serverNode = new ServerNodeConfig(_gatewayConfig.ClientProtocol, _gatewayConfig.ClientWeight, _gatewayConfig.ClientUniqueName);
+            var serverNode = new ServerNodeConfig
+            {
+                UniqueName = _gatewayConfig.ClientUniqueName,
+                Weight = _gatewayConfig.ClientWeight,
+                Protocol = _gatewayConfig.ClientProtocol
+            };
 
             using var res = await _httpClient.PostAsJsonAsync<ServerNodeConfig>(url, serverNode, cts.Token);
 

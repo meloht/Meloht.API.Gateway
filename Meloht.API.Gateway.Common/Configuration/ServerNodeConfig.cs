@@ -20,16 +20,7 @@ namespace Meloht.API.Gateway.Common.Configuration
 
         public int Weight { get; set; }
 
-        public ServerNodeConfig(string protocol, int weight, string uniqueName) : this(protocol, string.Empty, weight, uniqueName)
-        {
-        }
-        public ServerNodeConfig(string protocol, string host, int weight, string uniqueName)
-        {
-            Protocol = protocol;
-            Weight = weight;
-            UniqueName = uniqueName;
-            Host = host;
-        }
+      
 
 
     }

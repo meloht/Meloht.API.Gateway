@@ -8,6 +8,7 @@ namespace Meloht.API.Gateway.ServerProviders
 {
     public class ServerNode : ServerNodeConfig
     {
+    
         public ServerHealth Health { get; set; } = ServerHealth.Healthy;
         public int ConcurrentRequestCount
         {
