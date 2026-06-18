@@ -1,4 +1,5 @@
-﻿using Meloht.API.Gateway.Configuration;
+﻿using Meloht.API.Gateway.Common.HealthCheck;
+using Meloht.API.Gateway.Configuration;
 using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

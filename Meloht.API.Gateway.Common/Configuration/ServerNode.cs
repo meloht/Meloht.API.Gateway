@@ -1,5 +1,4 @@
-﻿using Meloht.API.Gateway.Common;
-using Meloht.API.Gateway.Configuration;
+﻿using Meloht.API.Gateway.Common.Configuration;
 using Meloht.API.Gateway.Utilities;
 using System;
 using System.Collections.Generic;

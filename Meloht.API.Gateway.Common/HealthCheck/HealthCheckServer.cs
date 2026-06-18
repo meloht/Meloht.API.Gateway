@@ -1,7 +1,6 @@
-﻿using Meloht.API.Gateway.Common;
-using Meloht.API.Gateway.Configuration;
+﻿using Meloht.API.Gateway.Common.Configuration;
+using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -9,7 +8,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Meloht.API.Gateway.ServerProviders
+namespace Meloht.API.Gateway.Common.HealthCheck
 {
     public class HealthCheckServer
     {
@@ -25,7 +24,7 @@ namespace Meloht.API.Gateway.ServerProviders
             _options = options;
             _options.OnChange(OnConfigChanged);
             OnConfigChanged(_options.CurrentValue);
-            _httpClient = httpClientFactory.CreateClient(AppSettings.GatewayClient);
+            _httpClient = httpClientFactory.CreateClient(HttpClientKey.ClientKey);
             _logger = logger;
 
         }
@@ -37,7 +36,7 @@ namespace Meloht.API.Gateway.ServerProviders
             }
             else
             {
-                _healthCheckTimeoutSeconds = AppSettings.HealthChecTimeoutSeconds;
+                _healthCheckTimeoutSeconds = HealthCheckAPI.HealthChecTimeoutSeconds;
             }
         }
 

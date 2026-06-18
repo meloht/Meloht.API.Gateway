@@ -1,4 +1,4 @@
-﻿using Meloht.API.Gateway.Configuration;
+﻿using Meloht.API.Gateway.Common.Configuration;
 using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -8,18 +8,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Meloht.API.Gateway.HostServices
+namespace Meloht.API.Gateway.Common.HealthCheck
 {
-    internal class ServerHealthCheckService : BackgroundService
+    public class ServerHealthCheckService : BackgroundService
     {
         private readonly ILogger<ServerHealthCheckService> _logger;
-        private readonly IServerProvider _serverProvider;
+        private readonly IServerHealthProvider _serverProvider;
         private readonly HealthCheckServer _healthCheckServer;
 
         private readonly ParallelOptions _parallelOptions;
         private int _healthCheckIntervalSeconds;
         private readonly IOptionsMonitor<HealthCheckConfig> _options;
-        public ServerHealthCheckService(IServerProvider serverProvider, HealthCheckServer healthCheckServer, ILogger<ServerHealthCheckService> logger, IOptionsMonitor<HealthCheckConfig> options)
+        public ServerHealthCheckService(IServerHealthProvider serverProvider, HealthCheckServer healthCheckServer, ILogger<ServerHealthCheckService> logger, IOptionsMonitor<HealthCheckConfig> options)
         {
             _serverProvider = serverProvider;
             _healthCheckServer = healthCheckServer;
@@ -38,7 +38,7 @@ namespace Meloht.API.Gateway.HostServices
             }
             else
             {
-                _healthCheckIntervalSeconds = AppSettings.HealthCheckIntervalSeconds;
+                _healthCheckIntervalSeconds = HealthCheckAPI.HealthCheckIntervalSeconds;
             }
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

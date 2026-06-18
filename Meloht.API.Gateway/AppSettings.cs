@@ -30,10 +30,7 @@ namespace Meloht.API.Gateway
         internal const int DatabaseExecuteTimeoutSeconds = 5;
 
 
-        internal const int HealthCheckIntervalSeconds = 120;
-        internal const int HealthChecTimeoutSeconds = 5;
 
-        public const string GatewayClient = "GatewayClient";
 
         public static string GetLoadBalancingPolicy(IConfiguration configuration)
         {

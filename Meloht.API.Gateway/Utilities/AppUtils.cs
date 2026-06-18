@@ -1,4 +1,4 @@
-﻿using Meloht.API.Gateway.Common;
+﻿using Meloht.API.Gateway.Common.Configuration;
 using Meloht.API.Gateway.Configuration;
 using Meloht.API.Gateway.LoadBalancing;
 using Meloht.API.Gateway.ServerProviders;

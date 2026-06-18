@@ -1,4 +1,6 @@
 ﻿using Meloht.API.Gateway.Common;
+using Meloht.API.Gateway.Common.Configuration;
+using Meloht.API.Gateway.Common.HealthCheck;
 using Meloht.API.Gateway.Configuration;
 using Meloht.API.Gateway.HostServices;
 using Meloht.API.Gateway.LoadBalancing;
@@ -21,7 +23,7 @@ namespace Meloht.API.Gateway
             services.Configure<ReverseProxyConfig>(configuration.GetSection(AppSettings.ReverseProxyKey));
           
             services.AddSingleton<IRandomFactory, RandomFactory>();
-            services.AddHttpClient(AppSettings.GatewayClient);
+            services.AddHttpClient(HttpClientKey.ClientKey);
 
             AddLoadBalancingPolicy(services, configuration);
 
@@ -40,8 +42,13 @@ namespace Meloht.API.Gateway
         {
             services.Configure<List<ServerNodeConfig>>(configuration.GetSection(AppSettings.TargetServersKey));
             services.AddSingleton<IServerProvider, ServerProviderJson>();
+            services.AddSingleton<IServerHealthProvider>(sp => sp.GetRequiredService<ServerProviderJson>());
         }
-
+        public static void AddDatabaseProvider(IServiceCollection services)
+        {
+            services.AddSingleton<IServerProvider, ServerProviderDatabase>();
+            services.AddSingleton<IServerHealthProvider>(sp => sp.GetRequiredService<ServerProviderDatabase>());
+        }
         public static void AddDatabaseConfig(IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<DatabaseAutoUpdateConfig>(configuration.GetSection(AppSettings.DatabaseAutoUpdateKey));

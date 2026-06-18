@@ -6,8 +6,7 @@ namespace Meloht.API.Gateway.ServerProviders
 {
     public enum ServerHealth
     {
-        Healthy,
-
-        Unhealthy,
+        Unhealthy = 0,
+        Healthy = 1
     }
 }

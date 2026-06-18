@@ -1,4 +1,5 @@
 ﻿using Meloht.API.Gateway.Common;
+using Meloht.API.Gateway.Common.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Logging;

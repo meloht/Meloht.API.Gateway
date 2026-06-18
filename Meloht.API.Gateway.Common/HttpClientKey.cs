@@ -6,6 +6,6 @@ namespace Meloht.API.Gateway.Common
 {
     public static class HttpClientKey
     {
-        public const string ClientKey = "ClientRegister";
+        public const string ClientKey = "GatewayClient";
     }
 }

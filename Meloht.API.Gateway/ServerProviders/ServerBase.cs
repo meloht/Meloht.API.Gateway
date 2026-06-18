@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Meloht.API.Gateway.Common.HealthCheck;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections;
 using System.Collections.Generic;

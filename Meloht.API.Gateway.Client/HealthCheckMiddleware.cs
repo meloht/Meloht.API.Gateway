@@ -1,4 +1,4 @@
-﻿using Meloht.API.Gateway.Common;
+﻿using Meloht.API.Gateway.Common.HealthCheck;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;

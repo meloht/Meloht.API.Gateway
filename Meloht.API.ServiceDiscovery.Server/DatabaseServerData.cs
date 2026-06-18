@@ -1,4 +1,4 @@
-﻿using Meloht.API.Gateway.Common;
+﻿using Meloht.API.Gateway.Common.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,5 @@
-﻿using Meloht.API.Gateway.Configuration;
+﻿using Meloht.API.Gateway.Common.HealthCheck;
+using Meloht.API.Gateway.Configuration;
 using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;

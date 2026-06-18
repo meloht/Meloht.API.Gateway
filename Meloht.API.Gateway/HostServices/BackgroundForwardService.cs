@@ -1,4 +1,6 @@
-﻿using Meloht.API.Gateway.LoadBalancing;
+﻿using Meloht.API.Gateway.Common;
+using Meloht.API.Gateway.Common.HealthCheck;
+using Meloht.API.Gateway.LoadBalancing;
 using Meloht.API.Gateway.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
@@ -27,7 +29,7 @@ namespace Meloht.API.Gateway.HostServices
             _loadBalancingPolicy = loadBalancingPolicy;
             _serverProvider = serverProvider;
             _gatewayProxy = gatewayProxy;
-            _httpClient = httpClientFactory.CreateClient(AppSettings.GatewayClient);
+            _httpClient = httpClientFactory.CreateClient(HttpClientKey.ClientKey);
             _poolStringBuilder = new ObjectPool<StringBuilder>(() => new StringBuilder(), maxSize: AppUtils.GetObjectPoolSize(), resetAction: ResetStringBuilder);
         }
         private void ResetStringBuilder(StringBuilder sb)

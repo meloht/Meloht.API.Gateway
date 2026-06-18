@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Meloht.API.Gateway.Common
+namespace Meloht.API.Gateway.Common.Configuration
 {
     public class ServerNodeConfig
     {
@@ -12,7 +12,6 @@ namespace Meloht.API.Gateway.Common
         /// ip + port
         /// </summary>
         public required string Host { get; set; }
-
 
         /// <summary>
         /// http or https
