@@ -12,7 +12,7 @@ namespace Meloht.API.Gateway.Common
         {
             context.Response.StatusCode = StatusCodes.Status200OK;
             context.Response.ContentType = MediaTypeNames.Application.Json;
-            var res = ResponseMessage.Success(msg);
+            var res = ResponseMessage<string>.Success(msg);
             string json = System.Text.Json.JsonSerializer.Serialize(res);
             await context.Response.WriteAsync(json);
         }
@@ -20,7 +20,16 @@ namespace Meloht.API.Gateway.Common
         {
             context.Response.StatusCode = StatusCodes.Status200OK;
             context.Response.ContentType = MediaTypeNames.Application.Json;
-            var res = ResponseMessage.Success(msg);
+            var res = ResponseMessage<string>.Success(msg);
+            string json = System.Text.Json.JsonSerializer.Serialize(res);
+            await context.Response.WriteAsync(json);
+        }
+
+        public static async Task WriteResponseSuccessAsync<T>(this HttpContext context, string msg, T data) where T : class
+        {
+            context.Response.StatusCode = StatusCodes.Status200OK;
+            context.Response.ContentType = MediaTypeNames.Application.Json;
+            var res = ResponseMessage<T>.Success(msg, data);
             string json = System.Text.Json.JsonSerializer.Serialize(res);
             await context.Response.WriteAsync(json);
         }

@@ -5,31 +5,36 @@ using System.Text;
 
 namespace Meloht.API.Gateway.Common
 {
-    public class ResponseMessage
+    public class ResponseMessage<T> where T : class
     {
         public string Message { get; set; }
         public int Status { get; set; }
         public string StatusCode { get; set; }
+        public T Data { get; set; }
 
-        public static ResponseMessage Error(string msg)
+        public static ResponseMessage<T> Error(string msg)
         {
-            ResponseMessage response = new ResponseMessage();
+            ResponseMessage<T> response = new ResponseMessage<T>();
             response.Message = msg;
             response.StatusCode = ResponseStatus.FailedCode;
             response.Status = ResponseStatus.Failed;
             return response;
         }
 
-        public static ResponseMessage Success(string msg)
+        public static ResponseMessage<T> Success(string msg)
         {
-            ResponseMessage response = new ResponseMessage();
+            return Success(msg,null);
+        }
+
+        public static ResponseMessage<T> Success(string msg,T data)
+        {
+            ResponseMessage<T> response = new ResponseMessage<T>();
             response.Message = msg;
+            response.Data = data;
             response.StatusCode = ResponseStatus.SuccessCode;
             response.Status = ResponseStatus.Success;
             return response;
         }
-
-       
     }
 
 

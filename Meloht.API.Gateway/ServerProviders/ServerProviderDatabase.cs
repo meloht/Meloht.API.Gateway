@@ -1,4 +1,6 @@
-﻿using Meloht.API.Gateway.Utilities;
+﻿using Meloht.API.Gateway.Common.Configuration;
+using Meloht.API.Gateway.Common.Database;
+using Meloht.API.Gateway.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -11,9 +13,9 @@ namespace Meloht.API.Gateway.ServerProviders
 {
     public class ServerProviderDatabase : IServerProvider
     {
-        private readonly DatabaseReadServerData _data;
+        private readonly DatabaseServerClient _data;
 
-        public ServerProviderDatabase(DatabaseReadServerData data)
+        public ServerProviderDatabase(DatabaseServerClient data)
         {
             _data = data;
         }

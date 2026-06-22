@@ -1,4 +1,5 @@
 ﻿using Meloht.API.Gateway.Common.Configuration;
+using Meloht.API.Gateway.Common.HealthCheck;
 using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -8,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Meloht.API.Gateway.Common.HealthCheck
+namespace Meloht.API.Gateway.Common.HostServices
 {
     public class ServerHealthCheckService : BackgroundService
     {

@@ -1,10 +1,7 @@
 ﻿using Meloht.API.Gateway.Common.Configuration;
 using Meloht.API.Gateway.Common.HealthCheck;
-using Meloht.API.Gateway.Configuration;
-using Meloht.API.Gateway.LoadBalancing;
-using Meloht.API.Gateway.Utilities;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Meloht.API.Gateway.Common.Utilities;
+using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -12,28 +9,29 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
 
-namespace Meloht.API.Gateway.ServerProviders
+namespace Meloht.API.Gateway.Common.Database
 {
-    public abstract class DatabaseReadServerData : ServerBase
+    public abstract class DatabaseServerClient: ServerBase
     {
-        private readonly ILogger<DatabaseReadServerData> _logger;
-        private string _connectionString;
+        private readonly ILogger<DatabaseServerClient> _logger;
+        protected string _connectionString;
 
         protected abstract DbConnection GetDbConnection(string connectionString);
         protected abstract DbCommand GetDbCommand(string sql, DbConnection connection);
 
-        private int _databaseTimeoutSeconds;
+        protected int _databaseTimeoutSeconds;
 
-        private readonly IOptionsMonitor<DatabaseAutoUpdateConfig> _options;
+        private readonly IOptionsMonitor<DatabaseConfig> _options;
 
-        public DatabaseReadServerData(ILogger<DatabaseReadServerData> logger, HealthCheckServer healthCheck, IOptionsMonitor<DatabaseAutoUpdateConfig> options) : base(healthCheck)
+        public DatabaseServerClient(ILogger<DatabaseServerClient> logger, HealthCheckServer healthCheck, IOptionsMonitor<DatabaseConfig> options) : base(healthCheck)
         {
             _logger = logger;
             _options = options;
             _options.OnChange(OnConfigChanged);
             OnConfigChanged(_options.CurrentValue);
         }
-        private void OnConfigChanged(DatabaseAutoUpdateConfig options)
+
+        private void OnConfigChanged(DatabaseConfig options)
         {
             if (options != null && options.DatabaseTimeoutSeconds > 0)
             {
@@ -41,7 +39,7 @@ namespace Meloht.API.Gateway.ServerProviders
             }
             else
             {
-                _databaseTimeoutSeconds = AppSettings.DatabaseExecuteTimeoutSeconds;
+                _databaseTimeoutSeconds = AppSettingsCore.DatabaseExecuteTimeoutSeconds;
             }
 
             if (options != null && !string.IsNullOrWhiteSpace(options.ConnectionString))
@@ -54,7 +52,6 @@ namespace Meloht.API.Gateway.ServerProviders
             }
 
         }
-
         public async Task DataReadAsync(ParallelOptions parallelOptions, CancellationToken cancellationToken)
         {
             try

@@ -1,4 +1,6 @@
-﻿using Meloht.API.ServiceDiscovery.Server;
+﻿using Meloht.API.Gateway.Common.Configuration;
+using Meloht.API.Gateway.Common.HealthCheck;
+using Meloht.API.ServiceDiscovery.Server;
 using Meloht.API.ServiceDiscovery.Server.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -12,7 +14,7 @@ namespace Meloht.API.ServiceDiscovery.Provider.PostgreSQL
 {
     public class ServerDataPostgreSQL : DatabaseServerData
     {
-        public ServerDataPostgreSQL(ILogger<DatabaseServerData> logger, IOptionsMonitor<DatabaseConfig> options) : base(logger, options)
+        public ServerDataPostgreSQL(ILogger<DatabaseServerData> logger, IOptionsMonitor<DatabaseConfig> options, HealthCheckServer checkServer) : base(logger, checkServer, options)
         {
         }
 

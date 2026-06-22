@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Meloht.API.Gateway.ServerProviders;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Meloht.API.Gateway.ServerProviders
+namespace Meloht.API.Gateway.Common.Configuration
 {
     public class ServerCluster
     {

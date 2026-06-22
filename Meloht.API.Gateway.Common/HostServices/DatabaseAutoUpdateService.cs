@@ -1,6 +1,5 @@
-﻿using Meloht.API.Gateway.Configuration;
-using Meloht.API.Gateway.ServerProviders;
-using Microsoft.Extensions.Configuration;
+﻿using Meloht.API.Gateway.Common.Configuration;
+using Meloht.API.Gateway.Common.Database;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -8,18 +7,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Meloht.API.Gateway.HostServices
+namespace Meloht.API.Gateway.Common.HostServices
 {
     public class DatabaseAutoUpdateService : BackgroundService
     {
         private readonly ILogger<DatabaseAutoUpdateService> _logger;
-        private readonly DatabaseReadServerData _serverProvider;
+        private readonly DatabaseServerClient _serverProvider;
         private readonly ParallelOptions _parallelOptions;
 
         private int _autoUpdateIntervalSeconds;
-        private readonly IOptionsMonitor<DatabaseAutoUpdateConfig> _options;
+        private readonly IOptionsMonitor<DatabaseConfig> _options;
 
-        public DatabaseAutoUpdateService(ILogger<DatabaseAutoUpdateService> logger, DatabaseReadServerData serverProvider, IOptionsMonitor<DatabaseAutoUpdateConfig> options)
+        public DatabaseAutoUpdateService(ILogger<DatabaseAutoUpdateService> logger, DatabaseServerClient serverProvider, IOptionsMonitor<DatabaseConfig> options)
         {
             _logger = logger;
             _options = options;
@@ -29,7 +28,7 @@ namespace Meloht.API.Gateway.HostServices
             _parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount };
 
         }
-        private void OnConfigChanged(DatabaseAutoUpdateConfig options)
+        private void OnConfigChanged(DatabaseConfig options)
         {
             if (options != null && options.IntervalSeconds > 0)
             {
@@ -37,7 +36,7 @@ namespace Meloht.API.Gateway.HostServices
             }
             else
             {
-                _autoUpdateIntervalSeconds = AppSettings.DatabaseIntervalSeconds;
+                _autoUpdateIntervalSeconds = AppSettingsCore.DatabaseIntervalSeconds;
             }
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

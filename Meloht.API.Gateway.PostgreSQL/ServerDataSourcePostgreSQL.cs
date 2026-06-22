@@ -1,4 +1,6 @@
-﻿using Meloht.API.Gateway.Common.HealthCheck;
+﻿using Meloht.API.Gateway.Common.Configuration;
+using Meloht.API.Gateway.Common.Database;
+using Meloht.API.Gateway.Common.HealthCheck;
 using Meloht.API.Gateway.Configuration;
 using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Extensions.Configuration;
@@ -11,9 +13,9 @@ using System.Text;
 
 namespace Meloht.API.Gateway.PostgreSQL
 {
-    public class ServerDataSourcePostgreSQL: DatabaseReadServerData
+    public class ServerDataSourcePostgreSQL: DatabaseServerClient
     {
-        public ServerDataSourcePostgreSQL(ILogger<DatabaseReadServerData> logger, HealthCheckServer checkServer, IOptionsMonitor<DatabaseAutoUpdateConfig> options) : base(logger, checkServer, options)
+        public ServerDataSourcePostgreSQL(ILogger<DatabaseServerClient> logger, HealthCheckServer checkServer, IOptionsMonitor<DatabaseConfig> options) : base(logger, checkServer, options)
         {
           
            

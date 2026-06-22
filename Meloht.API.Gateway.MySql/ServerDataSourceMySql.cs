@@ -1,4 +1,6 @@
-﻿using Meloht.API.Gateway.Common.HealthCheck;
+﻿using Meloht.API.Gateway.Common.Configuration;
+using Meloht.API.Gateway.Common.Database;
+using Meloht.API.Gateway.Common.HealthCheck;
 using Meloht.API.Gateway.Configuration;
 using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Extensions.Configuration;
@@ -12,9 +14,9 @@ using System.Text;
 
 namespace Meloht.API.Gateway.MySql
 {
-    public class ServerDataSourceMySql : DatabaseReadServerData
+    public class ServerDataSourceMySql : DatabaseServerClient
     {
-        public ServerDataSourceMySql(ILogger<DatabaseReadServerData> logger, HealthCheckServer checkServer, IOptionsMonitor<DatabaseAutoUpdateConfig> options) : base(logger, checkServer, options)
+        public ServerDataSourceMySql(ILogger<DatabaseServerClient> logger, HealthCheckServer checkServer, IOptionsMonitor<DatabaseConfig> options) : base(logger, checkServer, options)
         {
         }
 

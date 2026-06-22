@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Meloht.API.Gateway.Common\Meloht.API.Gateway.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="HostServices\" />
-  </ItemGroup>
-
 </Project>

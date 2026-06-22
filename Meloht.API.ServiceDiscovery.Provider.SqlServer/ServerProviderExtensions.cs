@@ -7,8 +7,13 @@ using System.Text;
 
 namespace Meloht.API.ServiceDiscovery.Provider.SqlServer
 {
-    public class ServerProviderExtensions
+    public static class ServerProviderExtensions
     {
-       
+        public static void AddServiceDiscovery(this IServiceCollection services, IConfiguration configuration)
+        {
+            ServiceCollectionExtensions.AddDatabaseConfig(services, configuration);
+            ServiceCollectionExtensions.AddHealthCheck(services, configuration);
+            services.AddSingleton<DatabaseServerData, ServerDataSqlServer>();
+        }
     }
 }

@@ -26,15 +26,36 @@ namespace Meloht.API.ServiceDiscovery.Server
         {
             var path = context.Request.Path.Value;
 
-            if (path != null && path.StartsWith(ServiceDiscoveryKey.RegisterPath))
+            if (path != null &&( path.StartsWith(ServiceDiscoveryKey.RegisterPath)
+                || path.StartsWith(ServiceDiscoveryKey.UnregisterPath)
+                || path.StartsWith(ServiceDiscoveryKey.GetClientsPath)))
             {
                 _logger.LogInformation("ServiceDiscovery Server Received request for path: {Path}", path);
 
-                await ClientRegisterAsync(context, path);
+                if (path.StartsWith(ServiceDiscoveryKey.RegisterPath))
+                {
+                    await ClientRegisterAsync(context, path);
 
-                return; // 关键：直接结束，不再进入后续 pipeline
+                    return; // 关键：直接结束，不再进入后续 pipeline
+                }
+
+                if (path.StartsWith(ServiceDiscoveryKey.UnregisterPath))
+                {
+
+                    await ClientUnregisterAsync(context, path);
+
+                    return; // 关键：直接结束，不再进入后续 pipeline
+                }
+
+                if (path.StartsWith(ServiceDiscoveryKey.GetClientsPath))
+                {
+
+                    await GetClientsAsync(context, path);
+
+                    return; // 关键：直接结束，不再进入后续 pipeline
+                }
             }
-
+           
             await _next(context);
         }
 
@@ -51,16 +72,39 @@ namespace Meloht.API.ServiceDiscovery.Server
             if (rent)
             {
                 await context.WriteResponseSuccessAsync("Client register success");
-                return;
             }
             else
             {
                 await context.WriteResponseErrorAsync("Client register failed");
+            }
+
+        }
+        private async Task ClientUnregisterAsync(HttpContext context, string path)
+        {
+            var clientNode = await JsonHelper.ReadJsonAsync<ServerNodeConfig>(context.Request.Body);
+            if (clientNode == null)
+            {
+                await context.WriteResponseErrorAsync("clientNode is null");
                 return;
             }
-          
+            clientNode.Host = context.Request.Host.ToString();
+            var rent = await _databaseServer.UnregisterUpdateAsync(clientNode);
+            if (rent)
+            {
+                await context.WriteResponseSuccessAsync("Client unregister success");
+            }
+            else
+            {
+                await context.WriteResponseErrorAsync("Client unregister failed");
+            }
+
         }
 
+        private async Task GetClientsAsync(HttpContext context, string path)
+        {
+            var rent = await _databaseServer.GetClientsFromDatabaseAsync(context.RequestAborted);
+            await context.WriteResponseSuccessAsync<List<ServerNodeConfig>>("get client success", rent);
+        }
 
     }
 }

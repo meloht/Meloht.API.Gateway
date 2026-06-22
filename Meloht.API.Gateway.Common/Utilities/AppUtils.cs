@@ -1,15 +1,12 @@
 ﻿using Meloht.API.Gateway.Common.Configuration;
-using Meloht.API.Gateway.Configuration;
-using Meloht.API.Gateway.LoadBalancing;
 using Meloht.API.Gateway.ServerProviders;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Text;
 
-namespace Meloht.API.Gateway.Utilities
+namespace Meloht.API.Gateway.Common.Utilities
 {
-    internal static class AppUtils
+    public static class AppUtils
     {
         public static int ConvertInt(string s, int defaultValue = 0)
         {
@@ -110,7 +107,7 @@ namespace Meloht.API.Gateway.Utilities
             return weight;
         }
 
-        internal static int GetObjectPoolSize()
+        public static int GetObjectPoolSize()
         {
             return Environment.ProcessorCount * 2;
         }

@@ -1,5 +1,6 @@
 ﻿using Meloht.API.Gateway.Common;
 using Meloht.API.Gateway.Common.HealthCheck;
+using Meloht.API.Gateway.Common.Utilities;
 using Meloht.API.Gateway.LoadBalancing;
 using Meloht.API.Gateway.Utilities;
 using Microsoft.AspNetCore.Http;

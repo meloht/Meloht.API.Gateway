@@ -1,6 +1,7 @@
 ﻿using Meloht.API.Gateway.Common;
 using Meloht.API.Gateway.Common.Configuration;
 using Meloht.API.Gateway.Common.HealthCheck;
+using Meloht.API.Gateway.Common.HostServices;
 using Meloht.API.Gateway.Configuration;
 using Meloht.API.Gateway.HostServices;
 using Meloht.API.Gateway.LoadBalancing;
@@ -51,7 +52,7 @@ namespace Meloht.API.Gateway
         }
         public static void AddDatabaseConfig(IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<DatabaseAutoUpdateConfig>(configuration.GetSection(AppSettings.DatabaseAutoUpdateKey));
+            services.Configure<DatabaseConfig>(configuration.GetSection(AppSettings.TargetServersKey));
         }
 
         private static void AddHealthCheck(IServiceCollection services, IConfiguration configuration)

@@ -1,4 +1,6 @@
-﻿using Meloht.API.Gateway.Common.HealthCheck;
+﻿using Meloht.API.Gateway.Common.Database;
+using Meloht.API.Gateway.Common.HealthCheck;
+using Meloht.API.Gateway.Common.HostServices;
 using Meloht.API.Gateway.HostServices;
 using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +14,7 @@ namespace Meloht.API.Gateway.MySql
         {
 
             services.AddHostedService<DatabaseAutoUpdateService>();
-            services.AddSingleton<DatabaseReadServerData, ServerDataSourceMySql>();
+            services.AddSingleton<DatabaseServerClient, ServerDataSourceMySql>();
             ServiceCollectionExtensions.AddDatabaseProvider(services);
         }
 

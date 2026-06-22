@@ -1,4 +1,6 @@
-﻿using Meloht.API.Gateway.Common.HealthCheck;
+﻿using Meloht.API.Gateway.Common.Configuration;
+using Meloht.API.Gateway.Common.Database;
+using Meloht.API.Gateway.Common.HealthCheck;
 using Meloht.API.Gateway.Configuration;
 using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Data.SqlClient;
@@ -9,9 +11,9 @@ using System.Data.Common;
 
 namespace Meloht.API.Gateway.SqlServer
 {
-    public class ServerDataSourceSqlServer : DatabaseReadServerData
+    public class ServerDataSourceSqlServer : DatabaseServerClient
     {
-        public ServerDataSourceSqlServer(ILogger<DatabaseReadServerData> logger, HealthCheckServer checkServer, IOptionsMonitor<DatabaseAutoUpdateConfig> options) : base(logger, checkServer, options)
+        public ServerDataSourceSqlServer(ILogger<DatabaseServerClient> logger, HealthCheckServer checkServer, IOptionsMonitor<DatabaseConfig> options) : base(logger, checkServer, options)
         {
         }
 

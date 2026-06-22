@@ -74,7 +74,7 @@ namespace Meloht.API.Gateway.Client
         {
             if (res.IsSuccessStatusCode)
             {
-                var resData = await res.Content.ReadFromJsonAsync<ResponseMessage>();
+                var resData = await res.Content.ReadFromJsonAsync<ResponseMessage<string>>();
                 if (resData != null)
                 {
                     if (resData.Status == ResponseStatus.Success)

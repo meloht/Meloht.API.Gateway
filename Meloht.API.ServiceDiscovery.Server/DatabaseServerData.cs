@@ -1,4 +1,7 @@
 ﻿using Meloht.API.Gateway.Common.Configuration;
+using Meloht.API.Gateway.Common.Database;
+using Meloht.API.Gateway.Common.HealthCheck;
+using Meloht.API.Gateway.Common.Utilities;
 using Meloht.API.ServiceDiscovery.Server.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -9,39 +12,29 @@ using System.Text;
 
 namespace Meloht.API.ServiceDiscovery.Server
 {
-    public abstract class DatabaseServerData
+    public abstract class DatabaseServerData: DatabaseServerClient
     {
-        private readonly ILogger<DatabaseServerData> _logger;
-
-        protected abstract DbConnection GetDbConnection(string connectionString);
-        protected abstract DbCommand GetDbCommand(string sql, DbConnection connection);
-
         protected abstract void AddParameterString(DbCommand cmd, string name, string val);
         protected abstract void AddParameterInt(DbCommand cmd, string name, int val);
 
-
-        private DatabaseConfig _databaseConfig;
-
-        public DatabaseServerData(ILogger<DatabaseServerData> logger, IOptionsMonitor<DatabaseConfig> options)
+        public DatabaseServerData(ILogger<DatabaseServerClient> loggerClient, HealthCheckServer healthCheck, IOptionsMonitor<DatabaseConfig> options)
+            :base(loggerClient, healthCheck, options)
         {
-            _logger = logger;
-            _databaseConfig = options.CurrentValue;
-            options.OnChange(val => _databaseConfig = val);
         }
 
 
         public async Task<bool> RegisterSaveAndUpdateAsync(ServerNodeConfig serverConfig)
         {
             ValidationData(serverConfig);
-            using var conn = GetDbConnection(_databaseConfig.ConnectionString);
+            using var conn = GetDbConnection(_connectionString);
             await conn.OpenAsync();
 
             string sql = "SELECT UniqueName FROM server_nodes where UniqueName=@name";
 
             using var cmd = GetDbCommand(sql, conn);
             AddParameterString(cmd, "name", serverConfig.UniqueName);
-            cmd.CommandTimeout = _databaseConfig.DatabaseTimeoutSeconds;
-            using var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_databaseConfig.DatabaseTimeoutSeconds));
+            cmd.CommandTimeout = _databaseTimeoutSeconds;
+            using var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_databaseTimeoutSeconds));
             var res = await cmd.ExecuteScalarAsync(ct.Token);
             string sqlData;
             if (res != null && res.ToString().Trim() == serverConfig.UniqueName)
@@ -65,15 +58,15 @@ namespace Meloht.API.ServiceDiscovery.Server
         public async Task<bool> UnregisterUpdateAsync(ServerNodeConfig serverConfig)
         {
             ValidationData(serverConfig);
-            using var conn = GetDbConnection(_databaseConfig.ConnectionString);
+            using var conn = GetDbConnection(_connectionString);
             await conn.OpenAsync();
 
             string sql = "SELECT UniqueName FROM server_nodes where UniqueName=@name";
 
             using var cmd = GetDbCommand(sql, conn);
             AddParameterString(cmd, "name", serverConfig.UniqueName);
-            cmd.CommandTimeout = _databaseConfig.DatabaseTimeoutSeconds;
-            using var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_databaseConfig.DatabaseTimeoutSeconds));
+            cmd.CommandTimeout = _databaseTimeoutSeconds;
+            using var ct = new CancellationTokenSource(TimeSpan.FromSeconds(_databaseTimeoutSeconds));
             var res = await cmd.ExecuteScalarAsync(ct.Token);
 
             if (res != null && res.ToString().Trim() == serverConfig.UniqueName)
@@ -89,6 +82,41 @@ namespace Meloht.API.ServiceDiscovery.Server
             {
                 return false;
             }
+        }
+
+        public async Task<List<ServerNodeConfig>> GetClientsFromDatabaseAsync(CancellationToken cancellationToken)
+        {
+            using var conn = GetDbConnection(_connectionString);
+            await conn.OpenAsync();
+            string sql = "SELECT Id, UniqueName, Host, Protocol, Weight FROM server_nodes where active = 1 order by Id";
+            using var cmd = GetDbCommand(sql, conn);
+            cmd.CommandTimeout = _databaseTimeoutSeconds;
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            cts.CancelAfter(TimeSpan.FromSeconds(_databaseTimeoutSeconds));
+
+            using var reader = await cmd.ExecuteReaderAsync(cts.Token);
+
+            List<ServerNodeConfig> servers = new List<ServerNodeConfig>();
+            while (await reader.ReadAsync())
+            {
+                int id = reader.GetInt32(0);
+                string name = reader.GetString(1);
+                string host = reader.GetString(2);
+                string protocol = reader.GetString(3);
+                int weight = reader.GetInt32(4);
+
+                servers.Add(new ServerNodeConfig
+                {
+                    Id = id,
+                    UniqueName = name,
+                    Host = host,
+                    Protocol = protocol,
+                    Weight = AppUtils.GetWeight(weight),
+                });
+            }
+            await conn.CloseAsync();
+
+            return servers;
         }
 
         private void ValidationData(ServerNodeConfig serverConfig)

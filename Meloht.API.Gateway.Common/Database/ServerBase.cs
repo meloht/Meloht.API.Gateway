@@ -1,19 +1,19 @@
-﻿using Meloht.API.Gateway.Common.HealthCheck;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Meloht.API.Gateway.Common.Configuration;
+using Meloht.API.Gateway.Common.HealthCheck;
+using Meloht.API.Gateway.ServerProviders;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Meloht.API.Gateway.ServerProviders
+namespace Meloht.API.Gateway.Common.Database
 {
     public class ServerBase
     {
         protected readonly Dictionary<string, ServerNode> _serversDict;
         protected readonly List<ServerNode> _serversOriginalList;
         protected readonly List<ServerNode> _serversHealthList;
-        internal readonly HealthCheckServer _healthCheckServer;
-        internal readonly ServerCluster _serverCluster;
+        public readonly HealthCheckServer _healthCheckServer;
+        public readonly ServerCluster _serverCluster;
         protected int _weightSum;
         protected readonly object _lock = new();
 

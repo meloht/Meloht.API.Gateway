@@ -8,5 +8,7 @@ namespace Meloht.API.Gateway.Common
     {
         public const string RegisterPath = "/register";
         public const string UnregisterPath = "/unregister";
+
+        public const string GetClientsPath = "/getclients";
     }
 }

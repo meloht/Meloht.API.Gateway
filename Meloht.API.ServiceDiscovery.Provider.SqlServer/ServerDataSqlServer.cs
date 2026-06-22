@@ -1,4 +1,6 @@
-﻿using Meloht.API.ServiceDiscovery.Server;
+﻿using Meloht.API.Gateway.Common.Configuration;
+using Meloht.API.Gateway.Common.HealthCheck;
+using Meloht.API.ServiceDiscovery.Server;
 using Meloht.API.ServiceDiscovery.Server.Configuration;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
@@ -12,7 +14,7 @@ namespace Meloht.API.ServiceDiscovery.Provider.SqlServer
 {
     public class ServerDataSqlServer : DatabaseServerData
     {
-        public ServerDataSqlServer(ILogger<DatabaseServerData> logger, IOptionsMonitor<DatabaseConfig> options) : base(logger, options)
+        public ServerDataSqlServer(ILogger<DatabaseServerData> logger, IOptionsMonitor<DatabaseConfig> options, HealthCheckServer checkServer) : base(logger, checkServer, options)
         {
         }
 

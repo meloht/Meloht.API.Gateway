@@ -1,4 +1,5 @@
-﻿using Meloht.API.Gateway.LoadBalancing;
+﻿using Meloht.API.Gateway.Common;
+using Meloht.API.Gateway.LoadBalancing;
 using Meloht.API.Gateway.Utilities;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -26,9 +27,6 @@ namespace Meloht.API.Gateway
 
         internal const int ProxyRequestTimeoutSeconds = 120;
         internal const int ProxyRequestQueuePoolSize = 1000;
-        internal const int DatabaseIntervalSeconds = 120;
-        internal const int DatabaseExecuteTimeoutSeconds = 5;
-
 
 
 
@@ -48,12 +46,12 @@ namespace Meloht.API.Gateway
         }
         public static int GetDatabaseAutoUpdateIntervalSeconds(IConfiguration configuration)
         {
-            var intervalSeconds = configuration.GetValue<int>(DatabaseAutoUpdateIntervalSeconds, DatabaseIntervalSeconds);
+            var intervalSeconds = configuration.GetValue<int>(DatabaseAutoUpdateIntervalSeconds, AppSettingsCore.DatabaseIntervalSeconds);
             return intervalSeconds;
         }
         public static int GetDatabaseTimeoutSeconds(IConfiguration configuration)
         {
-            var timeoutSeconds = configuration.GetValue<int>(DatabaseTimeoutSeconds, DatabaseExecuteTimeoutSeconds);
+            var timeoutSeconds = configuration.GetValue<int>(DatabaseTimeoutSeconds, AppSettingsCore.DatabaseExecuteTimeoutSeconds);
             return timeoutSeconds;
         }
         public static int GetHealthIntervalSeconds(IConfiguration configuration)

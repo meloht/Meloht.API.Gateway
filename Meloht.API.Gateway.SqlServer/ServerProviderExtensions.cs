@@ -1,4 +1,6 @@
-﻿using Meloht.API.Gateway.Common.HealthCheck;
+﻿using Meloht.API.Gateway.Common.Database;
+using Meloht.API.Gateway.Common.HealthCheck;
+using Meloht.API.Gateway.Common.HostServices;
 using Meloht.API.Gateway.HostServices;
 using Meloht.API.Gateway.ServerProviders;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +17,7 @@ namespace Meloht.API.Gateway.SqlServer
         public static void AddGatewayServerProviderDatabase(IServiceCollection services)
         {
             services.AddHostedService<DatabaseAutoUpdateService>();
-            services.AddSingleton<DatabaseReadServerData, ServerDataSourceSqlServer>();
+            services.AddSingleton<DatabaseServerClient, ServerDataSourceSqlServer>();
             ServiceCollectionExtensions.AddDatabaseProvider(services);
         }
         public static IServiceCollection AddGatewayService(this IServiceCollection services, IConfiguration configuration)
