@@ -1,3 +1,4 @@
+using Meloht.API.ServiceDiscovery.Provider.MySql;
 
 namespace Meloht.API.ServiceDiscovery.Server.WebAPI
 {
@@ -12,7 +13,7 @@ namespace Meloht.API.ServiceDiscovery.Server.WebAPI
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
+            builder.Services.AddServiceDiscovery(builder.Configuration);
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -24,7 +25,7 @@ namespace Meloht.API.ServiceDiscovery.Server.WebAPI
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
+            app.UseServiceDiscovery();
 
             app.MapControllers();
 

@@ -1,4 +1,5 @@
 ﻿using Meloht.API.ServiceDiscovery.Server;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -14,6 +15,11 @@ namespace Meloht.API.ServiceDiscovery.Provider.MySql
             ServiceCollectionExtensions.AddDatabaseConfig(services, configuration);
             ServiceCollectionExtensions.AddHealthCheck(services, configuration);
             services.AddSingleton<DatabaseServerData, ServerDataMySql>();
+        }
+
+        public static IApplicationBuilder UseServiceDiscovery(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<ServiceDiscoveryMiddleware>();
         }
     }
 }

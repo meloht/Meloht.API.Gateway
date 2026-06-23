@@ -2,6 +2,7 @@
 using Meloht.API.Gateway.Common.HealthCheck;
 using Meloht.API.Gateway.Common.HostServices;
 using Meloht.API.ServiceDiscovery.Server.Configuration;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -25,5 +26,7 @@ namespace Meloht.API.ServiceDiscovery.Server
             services.AddSingleton<HealthCheckServer>();
             services.AddHostedService<ServerHealthCheckService>();
         }
+
+      
     }
 }

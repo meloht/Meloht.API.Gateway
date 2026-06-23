@@ -1,4 +1,5 @@
 ﻿using Meloht.API.ServiceDiscovery.Server;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -14,6 +15,10 @@ namespace Meloht.API.ServiceDiscovery.Provider.PostgreSQL
             ServiceCollectionExtensions.AddDatabaseConfig(services, configuration);
             ServiceCollectionExtensions.AddHealthCheck(services, configuration);
             services.AddSingleton<DatabaseServerData, ServerDataPostgreSQL>();
+        }
+        public static IApplicationBuilder UseServiceDiscovery(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<ServiceDiscoveryMiddleware>();
         }
     }
 }
