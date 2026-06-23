@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="Meloht.API.Gateway.Client/Meloht.API.Gateway.Client.csproj" />
   <Project Path="Meloht.API.Gateway.Common/Meloht.API.Gateway.Common.csproj" />
+  <Project Path="Meloht.API.Gateway.ServiceDiscovery/Meloht.API.Gateway.ServiceDiscovery.csproj" />
   <Project Path="Meloht.API.Gateway/Meloht.API.Gateway.csproj" />
   <Project Path="Meloht.API.ServiceDiscovery.Provider.MySql/Meloht.API.ServiceDiscovery.Provider.MySql.csproj" />
   <Project Path="Meloht.API.ServiceDiscovery.Provider.PostgreSQL/Meloht.API.ServiceDiscovery.Provider.PostgreSQL.csproj" />
