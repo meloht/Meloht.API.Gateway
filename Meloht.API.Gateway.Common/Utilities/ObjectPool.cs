@@ -3,9 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Meloht.API.Gateway.Utilities
+namespace Meloht.API.Gateway.Common.Utilities
 {
-    internal sealed class ObjectPool<T>
+    public sealed class ObjectPool<T>
     {
         /// <summary>
         /// 创建对象的方法

@@ -20,10 +20,11 @@ namespace Meloht.API.Gateway
         private const string HealthIntervalSeconds = "Gateway:HealthCheck:IntervalSeconds";
         private const string HealthRequestTimeoutSeconds = "Gateway:HealthCheck:RequestTimeoutSeconds";
 
-        public const string TargetServersKey = "Gateway:TargetServers";
+     
         public const string ReverseProxyKey = "Gateway:ReverseProxy";
         public const string HealthCheckKey = "Gateway:HealthCheck";
         public const string DatabaseAutoUpdateKey = "Gateway:DatabaseAutoUpdate";
+        public const string TargetServersKey = "Gateway:TargetServers";
 
         internal const int ProxyRequestTimeoutSeconds = 120;
         internal const int ProxyRequestQueuePoolSize = 1000;

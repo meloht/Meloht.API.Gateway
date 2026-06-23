@@ -8,5 +8,7 @@ namespace Meloht.API.Gateway.Common
     {
         public const int DatabaseIntervalSeconds = 120;
         public const int DatabaseExecuteTimeoutSeconds = 5;
+
+       
     }
 }

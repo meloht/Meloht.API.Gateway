@@ -7,25 +7,32 @@ using System.Text;
 
 namespace Meloht.API.Gateway.ServerProviders
 {
-    public class ServerProviderServiceDiscovery : ServerBase, IServerProvider
+    public class ServerProviderServiceDiscovery : IServerProvider
     {
-        public ServerProviderServiceDiscovery(HealthCheckServer healthCheckServer) : base(healthCheckServer)
+        private ServiceDiscoveryClient _data;
+        public ServerProviderServiceDiscovery(ServiceDiscoveryClient data)
         {
+            _data = data;
         }
-
-        public ServerCluster GetCluster()
-        {
-            throw new NotImplementedException();
-        }
-
         public IReadOnlyList<ServerNode> GetHealthServers()
         {
-            throw new NotImplementedException();
+            return _data.GetHealthyServers();
         }
 
         public IReadOnlyList<ServerNode> GetOriginalServers()
         {
-            throw new NotImplementedException();
+            return _data.GetAllServers();
+        }
+
+
+        public ServerCluster GetCluster()
+        {
+            return _data._serverCluster;
+        }
+
+        public void UpdateHealthListByHealthService()
+        {
+            _data.UpdateHealthListByHealthService();
         }
     }
 }

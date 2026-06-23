@@ -39,12 +39,7 @@ namespace Meloht.API.Gateway
             return builder.UseMiddleware<RequestHandlerMiddleware>();
         }
 
-        public static void AddGatewayServerProviderJson(IServiceCollection services, IConfiguration configuration)
-        {
-            services.Configure<List<ServerNodeConfig>>(configuration.GetSection(AppSettings.TargetServersKey));
-            services.AddSingleton<IServerProvider, ServerProviderJson>();
-            services.AddSingleton<IServerHealthProvider>(sp => sp.GetRequiredService<ServerProviderJson>());
-        }
+
         public static void AddDatabaseProvider(IServiceCollection services)
         {
             services.AddSingleton<IServerProvider, ServerProviderDatabase>();
