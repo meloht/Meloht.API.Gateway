@@ -6,5 +6,6 @@
   <Project Path="Meloht.API.ServiceDiscovery.Provider.PostgreSQL/Meloht.API.ServiceDiscovery.Provider.PostgreSQL.csproj" />
   <Project Path="Meloht.API.ServiceDiscovery.Provider.SqlServer/Meloht.API.ServiceDiscovery.Provider.SqlServer.csproj" />
   <Project Path="Meloht.API.ServiceDiscovery.Server.UI/Meloht.API.ServiceDiscovery.Server.UI.csproj" />
+  <Project Path="Meloht.API.ServiceDiscovery.Server.WebAPI/Meloht.API.ServiceDiscovery.Server.WebAPI.csproj" Id="8ee0cfa9-3040-4084-a4ae-8356b1e2eb90" />
   <Project Path="Meloht.API.ServiceDiscovery.Server/Meloht.API.ServiceDiscovery.Server.csproj" />
 </Solution>

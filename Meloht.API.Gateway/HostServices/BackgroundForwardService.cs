@@ -125,11 +125,11 @@ namespace Meloht.API.Gateway.HostServices
         }
         private static HttpRequestMessage CreateProxyHttpRequest(HttpContext context, string targetUri)
         {
-
             var requestMessage = new HttpRequestMessage
             {
                 RequestUri = new Uri(targetUri),
-                Method = new HttpMethod(context.Request.Method)
+                
+                Method = HttpMethod.Parse(context.Request.Method)
             };
 
             // Body
@@ -150,6 +150,7 @@ namespace Meloht.API.Gateway.HostServices
 
             return requestMessage;
         }
+
         private async Task ExecuteRequestAsync(CancellationToken stoppingToken)
         {
             await foreach (RequestModel item in _gatewayProxy.RequestChannel.Reader.ReadAllAsync(stoppingToken))
