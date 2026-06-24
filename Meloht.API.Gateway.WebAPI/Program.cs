@@ -1,4 +1,4 @@
-using Meloht.API.Gateway.Json;
+using Meloht.API.Gateway.MySql;
 
 namespace Meloht.API.Gateway.WebAPI
 {

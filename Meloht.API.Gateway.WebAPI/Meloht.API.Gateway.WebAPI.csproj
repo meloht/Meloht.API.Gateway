@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Meloht.API.Gateway.Json\Meloht.API.Gateway.Json.csproj" />
+    <ProjectReference Include="..\Meloht.API.Gateway.MySql\Meloht.API.Gateway.MySql.csproj" />
   </ItemGroup>
 
 </Project>
