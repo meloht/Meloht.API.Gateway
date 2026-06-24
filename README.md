@@ -130,7 +130,9 @@ appsettings.json
 ```
 
 ### Service Discovery Mode
-<img width="659" height="492" alt="image" src="https://github.com/user-attachments/assets/b5cb0eda-5e57-49c2-a658-ccc9a6d55c6f" />
+
+<img width="642" height="485" alt="image" src="https://github.com/user-attachments/assets/5607c6e6-333c-45d0-84d1-fbecaa72428a" />
+
 
 #### api gateway setting
 ```csharp
